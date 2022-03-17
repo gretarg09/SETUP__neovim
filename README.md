@@ -1,2 +1,3 @@
-# SETUP__neovim
-Neovim setup
+# Neovim setup
+
+My personal Neovim setup written in lua.
