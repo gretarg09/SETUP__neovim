@@ -1,11 +1,11 @@
 return {
 	settings = {
 
-    python = {
-      analysis = {
-        typeCheckingMode = "on"
-      }
-    }
+        python = {
+          analysis = {
+            typeCheckingMode = "off"
+          }
+        }
 	},
 }
 
