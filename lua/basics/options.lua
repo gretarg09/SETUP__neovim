@@ -51,4 +51,5 @@ end
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
 vim.cmd [[set iskeyword+=-]]
+--vim.cmd [[set spell spelllang=en_us]] -- I will just need to turn this on one the fly. This is to annoying
 vim.cmd [[set formatoptions-=cro]] -- TODO: this doesn't seem to work

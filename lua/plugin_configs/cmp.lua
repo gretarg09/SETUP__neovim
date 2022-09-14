@@ -4,11 +4,14 @@ if not cmp_status_ok then
 end
 
 local snip_status_ok, luasnip = pcall(require, "luasnip")
+
+vim.notify(snip_status_ok)
+
 if not snip_status_ok then
   return
 end
 
-require("luasnip/loaders/from_vscode").lazy_load()
+require("luasnip.loaders.from_vscode").lazy_load()
 
 local check_backspace = function()
   local col = vim.fn.col "." - 1
@@ -48,9 +51,10 @@ local kind_icons = {
 cmp.setup {
   snippet = {
     expand = function(args)
-      luasnip.lsp_expand(args.body) -- For `luasnip` users.
+      luasnip.lsp_expand(args.body) -- For `luasnip` users. -- this is ok in neovim 7..
     end,
   },
+
   mapping = {
     ["<C-k>"] = cmp.mapping.select_prev_item(),
 		["<C-j>"] = cmp.mapping.select_next_item(),
@@ -94,6 +98,7 @@ cmp.setup {
       "s",
     }),
   },
+
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
@@ -110,6 +115,7 @@ cmp.setup {
       return vim_item
     end,
   },
+
   sources = {
     { name = "nvim_lsp" },
     { name = "nvim_lua" },
@@ -117,13 +123,16 @@ cmp.setup {
     { name = "buffer" },
     { name = "path" },
   },
+
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,
     select = false,
   },
+  
   documentation = {
     border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
   },
+  
   experimental = {
     ghost_text = false,
     native_menu = false,

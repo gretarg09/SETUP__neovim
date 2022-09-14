@@ -11,6 +11,8 @@ require "plugin_configs.lsp"
 require "plugin_configs.telescope"
 require "plugin_configs.treesitter"
 require "plugin_configs.lualine"
+require "plugin_configs.dap"
+require "plugin_configs.indentblankline"
 
 --> sources:
 -- 1. chris@machine excellent youtube series about neovim.

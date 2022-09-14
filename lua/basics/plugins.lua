@@ -1,3 +1,4 @@
+     
 -- Automatically install and setup packer.nvim on any machine that I clone my config to.
 local fn = vim.fn
 local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -21,7 +22,7 @@ if not status_ok then
   return
 end
 
--- Have packer use a popup window
+-- Have packer use a pop up window
 packer.init {
   display = {
     open_fn = function()
@@ -43,7 +44,7 @@ return require('packer').startup(function(use)
     use "ryanoasis/vim-devicons" -- Dev icons for nerdtree
     use 'frazrepo/vim-rainbow'
 
-    -- Colorschema
+    -- Color schema
     use 'folke/tokyonight.nvim'
     use 'sainnhe/everforest'
     use({"catppuccin/nvim", as = "catppuccin"})
@@ -52,13 +53,16 @@ return require('packer').startup(function(use)
     use "hrsh7th/nvim-cmp" -- The completion plugin
     use "hrsh7th/cmp-buffer" -- buffer completions
     use "hrsh7th/cmp-path" -- path completions
+
     use "hrsh7th/cmp-cmdline" -- cmdline completions
     use "saadparwaiz1/cmp_luasnip" -- snippet completions
+
     use "hrsh7th/cmp-nvim-lsp"
     use "hrsh7th/cmp-nvim-lua"
 
     -- snippets
-    use "L3MON4D3/LuaSnip" --snippet engine
+    --use "L3MON4D3/LuaSnip" --snippet engine
+    use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"}) 
     use "rafamadriz/friendly-snippets" -- a bunch of snippets to used
 
     -- LSP
@@ -86,9 +90,22 @@ return require('packer').startup(function(use)
       branch = 'v1', -- optional but strongly recommended
       config = function()
              -- you can configure Hop the way you like here; see :h hop-config
-      require'hop'.setup { keys = 'etovxqpdygfblzhckisuran'}
+              require('hop').setup { keys = 'etovxqpdygfblzhckisuran'}
     end}
 
+    -- Debugger
+    use 'mfussenegger/nvim-dap'
+    use 'mfussenegger/nvim-dap-python'
+    use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+    use 'theHamsta/nvim-dap-virtual-text'
+    use 'nvim-telescope/telescope-dap.nvim'
+
+
+    -- Blankline
+    use "lukas-reineke/indent-blankline.nvim"
+
+    -- Markdown
+    use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
 
     -- Automatically set up the configuration after cloning packer.nvim.
     if packer_bootstrap then
