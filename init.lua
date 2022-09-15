@@ -1,6 +1,6 @@
 require "basics.options"
 require "basics.keymaps"
-require "basics.abbreviatjons"
+require "basics.abbreviations"
 require "basics.plugins"
 require "basics.colorscheme"
 

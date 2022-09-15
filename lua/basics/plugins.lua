@@ -54,15 +54,16 @@ return require('packer').startup(function(use)
     use "hrsh7th/cmp-buffer" -- buffer completions
     use "hrsh7th/cmp-path" -- path completions
 
-    use "hrsh7th/cmp-cmdline" -- cmdline completions
+
     use "saadparwaiz1/cmp_luasnip" -- snippet completions
 
     use "hrsh7th/cmp-nvim-lsp"
     use "hrsh7th/cmp-nvim-lua"
 
     -- snippets
-    --use "L3MON4D3/LuaSnip" --snippet engine
-    use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"}) 
+    --  NOTE : https://www.reddit.com/r/neovim/comments/u056xt/caution_recent_breaking_changes_to_luasnip_and/https://www.reddit.com/r/neovim/comments/u056xt/caution_recent_breaking_changes_to_luasnip_and/    use "hrsh7th/cmp-cmdline" -- cmdline completions
+    use "L3MON4D3/LuaSnip"
+    --use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"}) 
     use "rafamadriz/friendly-snippets" -- a bunch of snippets to used
 
     -- LSP

@@ -5,16 +5,26 @@ end
 
 local snip_status_ok, luasnip = pcall(require, "luasnip")
 
+print('the snip status')
+print(snip_status_ok)
+
 if not snip_status_ok then
   return
 end
 
 require("luasnip.loaders.from_vscode").lazy_load()
 
+--old way of doing this
+--local check_backspace = function()
+--local col = vim.fn.col "." - 1
+--  return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
+--end
+--
 local check_backspace = function()
-  local col = vim.fn.col "." - 1
-  return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
 end
+
 
 --   פּ ﯟ   some other good icons
 local kind_icons = {
@@ -44,9 +54,11 @@ local kind_icons = {
   Operator = "",
   TypeParameter = "",
 }
+
 -- find more here: https://www.nerdfonts.com/cheat-sheet
 
 cmp.setup {
+
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body) -- For `luasnip` users. -- this is ok in neovim 7..
@@ -85,38 +97,39 @@ cmp.setup {
     -- Set `select` to `false` to only confirm explicitly selected items.
     ["<CR>"] = cmp.mapping.confirm { select = false },
     ["<Right>"] = cmp.mapping.confirm { select = true },
+
     ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.jumpable(1) then
-        luasnip.jump(1)
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif luasnip.expandable() then
-        luasnip.expand()
-      elseif check_backspace() then
-        -- cmp.complete()
-        fallback()
-      else
-        fallback()
-      end
-    end, {
-      "i",
-      "s",
-    }),
+       if cmp.visible() then
+         cmp.select_next_item()
+       elseif luasnip.jumpable(1) then
+         luasnip.jump(1)
+       elseif luasnip.expand_or_jumpable() then
+         luasnip.expand_or_jump()
+       elseif luasnip.expandable() then
+         luasnip.expand()
+       elseif check_backspace() then
+         -- cmp.complete()
+         fallback()
+       else
+         fallback()
+       end
+     end, {
+       "i",
+       "s",
+     }),
     ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, {
-      "i",
-      "s",
-    }),
-  },
+       if cmp.visible() then
+         cmp.select_prev_item()
+       elseif luasnip.jumpable(-1) then
+         luasnip.jump(-1)
+       else
+         fallback()
+       end
+     end, {
+       "i",
+       "s",
+     }),
+   },
 
   formatting = {
     fields = { "kind", "abbr", "menu" },
@@ -147,13 +160,20 @@ cmp.setup {
     behavior = cmp.ConfirmBehavior.Replace,
     select = false,
   },
-  
-  documentation = {
-    border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+
+  window = {
+    documentation = false,
+    -- documentation = {
+    --   border = "rounded",
+    --   winhighlight = "NormalFloat:Pmenu,NormalFloat:Pmenu,CursorLine:PmenuSel,Search:None",
+    -- },
+    completion = {
+      border = "rounded",
+      winhighlight = "NormalFloat:Pmenu,NormalFloat:Pmenu,CursorLine:PmenuSel,Search:None",
+    },
+
   },
-  
   experimental = {
-    ghost_text = false,
-    native_menu = false,
+    ghost_text = true,
   },
 }
