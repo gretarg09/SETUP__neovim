@@ -89,6 +89,11 @@ _G.packer_plugins = {
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/cmp-buffer",
     url = "https://github.com/hrsh7th/cmp-buffer"
   },
+  ["cmp-cmdline"] = {
+    loaded = true,
+    path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/cmp-cmdline",
+    url = "https://github.com/hrsh7th/cmp-cmdline"
+  },
   ["cmp-nvim-lsp"] = {
     loaded = true,
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
@@ -129,6 +134,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim",
     url = "https://github.com/lukas-reineke/indent-blankline.nvim"
+  },
+  ["isort.nvim"] = {
+    loaded = true,
+    path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/isort.nvim",
+    url = "https://github.com/stsewd/isort.nvim"
   },
   ["lualine.nvim"] = {
     loaded = true,
@@ -212,6 +222,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/popup.nvim",
     url = "https://github.com/nvim-lua/popup.nvim"
+  },
+  ["symbols-outline.nvim"] = {
+    loaded = true,
+    path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/symbols-outline.nvim",
+    url = "https://github.com/simrat39/symbols-outline.nvim"
   },
   ["telescope-dap.nvim"] = {
     loaded = true,

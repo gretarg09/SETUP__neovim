@@ -54,14 +54,13 @@ return require('packer').startup(function(use)
     use "hrsh7th/cmp-buffer" -- buffer completions
     use "hrsh7th/cmp-path" -- path completions
 
-
     use "saadparwaiz1/cmp_luasnip" -- snippet completions
 
     use "hrsh7th/cmp-nvim-lsp"
     use "hrsh7th/cmp-nvim-lua"
 
     -- snippets
-    --  NOTE : https://www.reddit.com/r/neovim/comments/u056xt/caution_recent_breaking_changes_to_luasnip_and/https://www.reddit.com/r/neovim/comments/u056xt/caution_recent_breaking_changes_to_luasnip_and/    use "hrsh7th/cmp-cmdline" -- cmdline completions
+    use "hrsh7th/cmp-cmdline" -- cmdline completions
     use "L3MON4D3/LuaSnip"
     --use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"}) 
     use "rafamadriz/friendly-snippets" -- a bunch of snippets to used
@@ -101,12 +100,17 @@ return require('packer').startup(function(use)
     use 'theHamsta/nvim-dap-virtual-text'
     use 'nvim-telescope/telescope-dap.nvim'
 
+    -- Outline
+    use 'simrat39/symbols-outline.nvim' -- I am not sure about this plugin. Need to test it.
 
     -- Blankline
     use "lukas-reineke/indent-blankline.nvim"
 
     -- Markdown
     use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+
+    -- Isort
+    use 'stsewd/isort.nvim'
 
     -- Automatically set up the configuration after cloning packer.nvim.
     if packer_bootstrap then
