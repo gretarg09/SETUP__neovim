@@ -11,3 +11,19 @@ TODO:
 
 LEARNINGS:
 - I need to take a lua course on udemy to understand the language better.
+
+
+
+
+## Updating neovim on Ubuntu
+----------------------
+
+Remove neovim
+
+$ sudo apt remove neovim -y
+
+Now do you can update normally with the commands:
+
+$ sudo add-apt-repository ppa:neovim-ppa/stable
+$ sudo apt-get update
+$ sudo apt-get install neovim

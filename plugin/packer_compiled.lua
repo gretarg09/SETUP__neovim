@@ -157,6 +157,11 @@ _G.packer_plugins = {
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/nerdtree",
     url = "https://github.com/preservim/nerdtree"
   },
+  ["null-ls.nvim"] = {
+    loaded = true,
+    path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
+    url = "https://github.com/jose-elias-alvarez/null-ls.nvim"
+  },
   ["nvim-cmp"] = {
     loaded = true,
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/nvim-cmp",
