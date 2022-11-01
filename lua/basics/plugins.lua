@@ -40,7 +40,8 @@ return require('packer').startup(function(use)
     use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
     use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
 
-    use "preservim/nerdtree"
+
+    use {'nvim-tree/nvim-tree.lua', requires = {'nvim-tree/nvim-web-devicons'}, tag = 'nightly'}
     use "ryanoasis/vim-devicons" -- Dev icons for nerdtree
     use 'frazrepo/vim-rainbow'
 
