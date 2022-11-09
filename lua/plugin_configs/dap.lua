@@ -40,20 +40,26 @@ vim.keymap.set("n", "<F4>", ":lua require'dap'.continue()<CR>", opts)
 vim.keymap.set("n", "<leader>b", ":lua require'dap'.toggle_breakpoint()<CR>", opts)
 vim.keymap.set("n", "<Leader>B", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", opts)
 vim.keymap.set("n", "<Leader>lp", ":lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>", opts)
-vim.keymap.set("n", "<Leader>dr", ":lua require'dap'.repl.open()<CR>", opts)
-vim.keymap.set("n", "<Leader>dl", ":lua require'dap'.run_last()<CR>", opts)
+
+--vim.keymap.set("n", "<Leader>dr", ":lua require'dap'.repl.open()<CR>", opts) -- NOTE do I need this?
+--vim.keymap.set("n", "<Leader>dl", ":lua require'dap'.run_last()<CR>", opts) -- Note do I need this?-
+
+vim.keymap.set("n", "<Leader>ds", ":lua require('dap-python').test_method()<CR>", opts)
+vim.keymap.set("n", "<Leader>dt", ":lua require('dapui').toggle()<CR>", opts)
 
 
 -- Setup the listeners for dap ui, see readme file of the project for more info
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open()
 end
-dap.listeners.before.event_terminated["dapui_config"] = function()
-  dapui.close()
-end
-dap.listeners.before.event_exited["dapui_config"] = function()
-  dapui.close()
-end
+
+--dap.listeners.before.event_terminated["dapui_config"] = function()
+--  dapui.close()
+--end
+
+--dap.listeners.before.event_exited["dapui_config"] = function()
+--  dapui.close()
+--end
 
 
 dapui.setup({
@@ -79,13 +85,11 @@ dapui.setup({
   -- Layouts are opened in order so that earlier layouts take priority in window sizing.
   layouts = {
     {
-      elements = {
       -- Elements can be strings or table with id and size keys.
-        { id = "scopes", size = 0.25 },
-        "breakpoints",
-        "stacks",
-        "watches",
-      },
+      elements = {{id = "scopes", size = 0.25 },
+                   "breakpoints",
+                   "stacks",
+                   "watches"},
       size = 40, -- 40 columns
       position = "left",
     },
@@ -112,5 +116,3 @@ dapui.setup({
     max_value_lines = 100, -- Can be integer or nil.
   }
 })
-
-

@@ -120,6 +120,9 @@ return require('packer').startup(function(use)
     -- Isort
     use 'stsewd/isort.nvim'
 
+    -- Start screen
+    use {'glepnir/dashboard-nvim'}
+
     -- Automatically set up the configuration after cloning packer.nvim.
     if packer_bootstrap then
       require('packer').sync()
