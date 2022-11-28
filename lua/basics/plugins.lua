@@ -120,8 +120,11 @@ return require('packer').startup(function(use)
     -- Isort
     use 'stsewd/isort.nvim'
 
-    -- Start screen
-    use {'glepnir/dashboard-nvim'}
+    use {
+        'goolord/alpha-nvim',
+        requires = { 'kyazdani42/nvim-web-devicons' },
+    }
+
 
     -- Automatically set up the configuration after cloning packer.nvim.
     if packer_bootstrap then

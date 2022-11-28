@@ -79,6 +79,11 @@ _G.packer_plugins = {
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/LuaSnip",
     url = "https://github.com/L3MON4D3/LuaSnip"
   },
+  ["alpha-nvim"] = {
+    loaded = true,
+    path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/alpha-nvim",
+    url = "https://github.com/goolord/alpha-nvim"
+  },
   catppuccin = {
     loaded = true,
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/catppuccin",
@@ -113,11 +118,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
     url = "https://github.com/saadparwaiz1/cmp_luasnip"
-  },
-  ["dashboard-nvim"] = {
-    loaded = true,
-    path = "/home/gretar_atli/.local/share/nvim/site/pack/packer/start/dashboard-nvim",
-    url = "https://github.com/glepnir/dashboard-nvim"
   },
   everforest = {
     loaded = true,
