@@ -14,15 +14,16 @@ dashboard.section.header.val = {
 
 -- Set menu
 dashboard.section.buttons.val = {
-    dashboard.button( "f", "  > Find file", ":Telescope find_files<CR>"),
-    dashboard.button( "g", "  > Find word", ":Telescope live_grep<CR>"),
-    dashboard.button( "r", "  > Recent"   , ":Telescope oldfiles<CR>"),
-    dashboard.button( "n",  "neovim configs",               ":cd $HOME/.config/nvim | Telescope find_files<CR>"),
+    dashboard.button( "f", "Find file", ":Telescope find_files<CR>"),
+    dashboard.button( "g", "Find word", ":Telescope live_grep<CR>"),
+    dashboard.button( "r", "Recent", ":Telescope oldfiles<CR>"),
+    dashboard.button( "n", "Notes", ":cd $HOME/Notes | Telescope find_files<CR>"),
 
-    dashboard.button( "b",  "Budget Optimiser", ":cd $HOME/Precis/git_repos/ds-budget-optimiser | Telescope find_files<CR>"),
-    dashboard.button( "i",  "Budget Optimiser", ":cd $HOME/Precis/git_repos/precis-dev-integrated-attribution | Telescope find_files<CR>"),
+    dashboard.button( "c", "Neovim configs", ":cd $HOME/.config/nvim | Telescope find_files<CR>"),
+    dashboard.button( "b", "Budget Optimiser", ":cd $HOME/Precis/git_repos/ds-budget-optimiser | Telescope find_files<CR>"),
+    dashboard.button( "i", "Integrated Attribution", ":cd $HOME/Precis/git_repos/precis-dev-integrated-attribution | Telescope find_files<CR>"),
 
-    dashboard.button( "q", "  > Quit NVIM", ":qa<CR>"),
+    dashboard.button( "q", "Quit NVIM", ":qa<CR>"),
 }
 
 local function footer()
