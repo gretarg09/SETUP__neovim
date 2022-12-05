@@ -71,7 +71,6 @@ return require('packer').startup(function(use)
     use "williamboman/nvim-lsp-installer" -- simple to use language server installer
 
     -- Formatting + LSP
-    --
     use({
         "jose-elias-alvarez/null-ls.nvim",
         requires = { "nvim-lua/plenary.nvim" },
@@ -125,6 +124,9 @@ return require('packer').startup(function(use)
         requires = { 'kyazdani42/nvim-web-devicons' },
     }
 
+    -- Copilot
+    use "github/copilot.vim"
+    -- use "zbirenbaum.copilot.lua" -- is an alternive that is written in pure lua.
 
     -- Automatically set up the configuration after cloning packer.nvim.
     if packer_bootstrap then

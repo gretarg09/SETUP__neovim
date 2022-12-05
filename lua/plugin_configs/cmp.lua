@@ -99,6 +99,12 @@ cmp.setup {
     ["<Right>"] = cmp.mapping.confirm { select = true },
 
     ["<Tab>"] = cmp.mapping(function(fallback)
+        -- add support for copilot
+    --cmp.mapping.abort()
+      -- local copilot_keys = vim.fn["copilot#Accept"]()
+      -- if copilot_keys ~= "" then
+      --     vim.api.nvim_feedkeys(copilot_keys, "i", true)
+
        if cmp.visible() then
          cmp.select_next_item()
        elseif luasnip.jumpable(1) then
@@ -174,6 +180,6 @@ cmp.setup {
 
   },
   experimental = {
-    ghost_text = true,
+    ghost_text = false, -- using copilot instead, if set to true then the copilot suggestions will be overwritten.
   },
 }
