@@ -128,6 +128,10 @@ return require('packer').startup(function(use)
     use "github/copilot.vim"
     -- use "zbirenbaum.copilot.lua" -- is an alternive that is written in pure lua.
 
+    -- Git
+    use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+
+
     -- Automatically set up the configuration after cloning packer.nvim.
     if packer_bootstrap then
       require('packer').sync()
