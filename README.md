@@ -18,12 +18,6 @@ LEARNINGS:
 ## Updating neovim on Ubuntu
 ----------------------
 
-Remove neovim
+The easiest way to update neovim is using snap. It containst the latest versions.
 
-$ sudo apt remove neovim -y
-
-Now do you can update normally with the commands:
-
-$ sudo add-apt-repository ppa:neovim-ppa/stable
-$ sudo apt-get update
-$ sudo apt-get install neovim
+[neovim on snap](https://snapcraft.io/install/nvim/ubuntu)

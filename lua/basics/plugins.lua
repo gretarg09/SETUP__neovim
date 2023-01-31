@@ -37,6 +37,7 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
     -- Packer can manage itself
     use 'wbthomason/packer.nvim'
+
     use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
     use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
 
@@ -114,7 +115,11 @@ return require('packer').startup(function(use)
     use "lukas-reineke/indent-blankline.nvim"
 
     -- Markdown
-    use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+    --use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+    use({
+        "iamcco/markdown-preview.nvim",
+        run = function() vim.fn["mkdp#util#install"]() end,
+    })
 
     -- Isort
     use 'stsewd/isort.nvim'
@@ -131,6 +136,12 @@ return require('packer').startup(function(use)
     -- Git
     use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
+
+    --Rainbow CSV
+    use "mechatroner/rainbow_csv"
+
+    -- Markers
+    use "chentoast/marks.nvim"
 
     -- Automatically set up the configuration after cloning packer.nvim.
     if packer_bootstrap then

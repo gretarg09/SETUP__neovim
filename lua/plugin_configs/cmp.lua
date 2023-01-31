@@ -1,4 +1,8 @@
 local cmp_status_ok, cmp = pcall(require, "cmp")
+
+print('the cmp status')
+print(cmp_status_ok)
+
 if not cmp_status_ok then
   return
 end
@@ -54,7 +58,6 @@ local kind_icons = {
   Operator = "",
   TypeParameter = "",
 }
-
 -- find more here: https://www.nerdfonts.com/cheat-sheet
 
 cmp.setup {

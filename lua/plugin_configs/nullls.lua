@@ -24,6 +24,10 @@ null_ls.setup({
         null_ls.builtins.formatting.black.with{extra_args={ "--fast" }},
         null_ls.builtins.formatting.isort,
         null_ls.builtins.formatting.prettier,
+
+        null_ls.builtins.diagnostics.sqlfluff.with({
+            extra_args = { "--dialect", "bigquery" }, -- change to your dialect
+        }),
     }
 })
 
