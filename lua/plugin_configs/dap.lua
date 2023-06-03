@@ -45,9 +45,13 @@ vim.keymap.set("n", "<Leader>lp", ":lua require'dap'.set_breakpoint(nil, nil, vi
 --vim.keymap.set("n", "<Leader>dl", ":lua require'dap'.run_last()<CR>", opts) -- Note do I need this?-
 
 --vim.keymap.set("n", "<Leader>ds", ":lua require('dap-python').test_method()<CR>", opts)
-vim.keymap.set("n", "<Leader>ds", ":lua require('dap').continue()<CR>", opts) -- running a main function in python
-vim.keymap.set("n", "<Leader>dt", ":lua require('dapui').toggle()<CR>", opts)
+vim.keymap.set("n", "<Leader>dds", ":lua require('dap').continue()<CR>", opts) -- running a main function in python
+vim.keymap.set("n", "<Leader>ddt", ":lua require('dapui').toggle()<CR>", opts)
+vim.keymap.set("n", "<Leader>ddo", ":lua require('dapui').open()<CR>", opts)
+vim.keymap.set("n", "<Leader>ddc", ":lua require('dapui').close()<CR>", opts)
+
 vim.notify("dap loaded with python main execution activated")
+
 
 -- Setup the listeners for dap ui, see readme file of the project for more info
 dap.listeners.after.event_initialized["dapui_config"] = function()

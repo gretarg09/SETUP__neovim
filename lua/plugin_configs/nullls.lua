@@ -26,7 +26,7 @@ null_ls.setup({
         null_ls.builtins.formatting.prettier,
 
         null_ls.builtins.diagnostics.sqlfluff.with({
-            extra_args = { "--dialect", "bigquery" }, -- change to your dialect
+            extra_args = { "--dialect bigquery"}, -- change to your dialect
         }),
     }
 })

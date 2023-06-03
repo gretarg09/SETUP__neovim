@@ -5,6 +5,7 @@ require "basics.plugins"
 require "basics.colorscheme"
 
 require "plugin_configs.lsp"
+require "plugin_configs.lsp_signature"
 require "plugin_configs.cmp"
 require "plugin_configs.copilot"
 require "plugin_configs.dap"

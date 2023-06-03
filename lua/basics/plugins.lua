@@ -14,15 +14,16 @@ require('packer').startup(function(use)
     use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
     use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
 
-
     use {'nvim-tree/nvim-tree.lua', requires = {'nvim-tree/nvim-web-devicons'}, tag = 'nightly'}
     use "ryanoasis/vim-devicons" -- Dev icons for nerdtree
     use 'frazrepo/vim-rainbow'
+    use { "ray-x/lsp_signature.nvim",}
 
     -- Color schema
     use 'folke/tokyonight.nvim'
     use 'sainnhe/everforest'
     use({"catppuccin/nvim", as = "catppuccin"})
+    use {'uloco/bluloco.nvim', requires = { 'rktjmp/lush.nvim' } }
 
     use { -- Autocompletion
         'hrsh7th/nvim-cmp',
@@ -120,6 +121,15 @@ require('packer').startup(function(use)
 
     -- Markers
     use "chentoast/marks.nvim"
+    use "ThePrimeagen/harpoon"
+
+    -- Commenting
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    }
 
   local has_plugins, plugins = pcall(require, 'custom.plugins')
   if has_plugins then
