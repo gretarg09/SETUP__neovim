@@ -24,6 +24,13 @@ require('packer').startup(function(use)
     use 'sainnhe/everforest'
     use({"catppuccin/nvim", as = "catppuccin"})
     use {'uloco/bluloco.nvim', requires = { 'rktjmp/lush.nvim' } }
+    use({
+      "neanias/everforest-nvim",
+      -- Optional; default configuration will be used if setup isn't called.
+      config = function()
+        require("everforest").setup()
+      end,
+    })
 
     use { -- Autocompletion
         'hrsh7th/nvim-cmp',

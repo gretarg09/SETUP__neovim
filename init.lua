@@ -20,6 +20,7 @@ require "plugin_configs.symbolsoutline"
 require "plugin_configs.telescope"
 require "plugin_configs.treesitter"
 require "plugin_configs.marks"
+require "plugin_configs.everforest"
 --> sources:
 -- 1. chris@machine excellent youtube series about neovim.
 --        The github page is https://github.com/LunarVim/Neovim-from-scratch
