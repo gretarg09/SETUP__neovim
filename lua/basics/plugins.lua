@@ -138,6 +138,13 @@ require('packer').startup(function(use)
         end
     }
 
+    ---mini surround
+    use 'echasnovski/mini.surround'
+
+    -- vimtex
+    use 'lervag/vimtex'
+
+--
   local has_plugins, plugins = pcall(require, 'custom.plugins')
   if has_plugins then
     plugins(use)

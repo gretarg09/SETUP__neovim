@@ -19,6 +19,13 @@ dashboard.section.header.val = {
 
 "",
 "                While there is value in the items on the right, we value the items on the left more.",
+"",
+"",
+"No BrOkEn WiNdOw ThEoRy",
+"",
+"  Suggests that when bad behavior is not corrected immediately, it shows people that there is no downside",
+"  to breaking the rules, practices or standards. If there is no negative outcome, cutting corners becomes",
+"  acceptable and in time quality always decreases.",
 }
 
 -- Set menu

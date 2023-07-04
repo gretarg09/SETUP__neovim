@@ -5,11 +5,9 @@ My personal Neovim setup written in lua.
 
 TODO:
 - add folding: I can use this article to set it up https://alpha2phi.medium.com/neovim-for-beginners-code-folding-7574925412ea
-- add lsp support for terraform.
 - look into toolings to see the file tree.
   I want to quickly be able to see how a file is setup.
       - SOLUTION: https://github.com/stevearc/aerial.nvim
-- setup my nodes in github and write it locally using markdown viewer. See https://jdhao.github.io/2019/01/15/markdown_edit_preview_nvim/
 
 LEARNINGS:
 - I need to take a lua course on udemy to understand the language better.
@@ -34,3 +32,10 @@ Clone the repository and read the readme file. It is always best to simple insta
 
     
 
+## IDEAs
+
+* I want to be able to create a keybinding that runs the doctest of a given file.
+It should open up a terminal in nvim and run the doctest there.
+* It would also be nice to be able to run a test by pressing some keybinding if I am 
+inside a test file.
+* Fix the interactive box in the debugger.
