@@ -4,3 +4,7 @@
 --
 --Useful help sections
 --:help vimtex-default-mappings - all vimtex mappings.
+--:help vimtex-mappings - all vimtex mappings.
+--:help vimtex-commands - all vimtex commands.
+--
+vim.g.vimtex_view_method = 'zathura'

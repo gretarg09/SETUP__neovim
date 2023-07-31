@@ -131,15 +131,10 @@ require('packer').startup(function(use)
     use "ThePrimeagen/harpoon"
 
     -- Commenting
-    use {
-        'numToStr/Comment.nvim',
-        config = function()
-            require('Comment').setup()
-        end
-    }
+    use "tpope/vim-commentary"
 
-    ---mini surround
-    use 'echasnovski/mini.surround'
+    -- Surround
+    use "tpope/vim-surround"
 
     -- vimtex
     use 'lervag/vimtex'
