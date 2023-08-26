@@ -39,3 +39,12 @@ It should open up a terminal in nvim and run the doctest there.
 * It would also be nice to be able to run a test by pressing some keybinding if I am 
 inside a test file.
 * Fix the interactive box in the debugger.
+
+
+## Snippets
+
+I followed [this article]() to setup luasnip and to learn how to use it.
+
+
+## reload
+[Add the script from this thread](https://stackoverflow.com/questions/72412720/how-to-source-init-lua-without-restarting-neovim)
