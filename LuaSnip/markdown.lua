@@ -33,7 +33,7 @@ return {
     s({trig="link", dscr="Markdown link"},
       fmt( -- The snippet code actually looks like the equation environment it produces.
         [[
-             (<>)[<>]
+             [<>](<>)
         ]],
         -- The insert node is placed in the <> angle brackets
         { i(1, "LiNk"), i(2, "DeScRiPtIoN") },

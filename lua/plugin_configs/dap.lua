@@ -44,7 +44,7 @@ vim.keymap.set("n", "<Leader>lp", ":lua require'dap'.set_breakpoint(nil, nil, vi
 --vim.keymap.set("n", "<Leader>dr", ":lua require'dap'.repl.open()<CR>", opts) -- NOTE do I need this?
 --vim.keymap.set("n", "<Leader>dl", ":lua require'dap'.run_last()<CR>", opts) -- Note do I need this?-
 
---vim.keymap.set("n", "<Leader>ds", ":lua require('dap-python').test_method()<CR>", opts)
+vim.keymap.set("n", "<Leader>ddu", ":lua require('dap-python').test_method()<CR>", opts)
 vim.keymap.set("n", "<Leader>dds", ":lua require('dap').continue()<CR>", opts) -- running a main function in python
 vim.keymap.set("n", "<Leader>ddt", ":lua require('dapui').toggle()<CR>", opts)
 vim.keymap.set("n", "<Leader>ddo", ":lua require('dapui').open()<CR>", opts)

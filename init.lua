@@ -23,6 +23,7 @@ require "plugin_configs.marks"
 require "plugin_configs.everforest"
 require "plugin_configs.luasnip"
 require "plugin_configs.vimtex"
+require "plugin_configs.aerial"
 
 --> sources:
 -- 1. chris@machine excellent youtube series about neovim.

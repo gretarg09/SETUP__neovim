@@ -7,7 +7,9 @@ TODO:
 - add folding: I can use this article to set it up https://alpha2phi.medium.com/neovim-for-beginners-code-folding-7574925412ea
 - look into toolings to see the file tree.
   I want to quickly be able to see how a file is setup.
-      - SOLUTION: https://github.com/stevearc/aerial.nvim
+      - SOLUTION: https://github.com/stevearc/aerial.nvim -- Done
+- Change over to using lazy.nvim. I think its probably best to remove neovim, reinstall the newest stable version and then install all plugins using lazy.nvim.
+- [Debugging in Javascript](https://miguelcrespo.co/posts/debugging-javascript-applications-with-neovim/)
 
 LEARNINGS:
 - I need to take a lua course on udemy to understand the language better.
@@ -39,6 +41,7 @@ It should open up a terminal in nvim and run the doctest there.
 * It would also be nice to be able to run a test by pressing some keybinding if I am 
 inside a test file.
 * Fix the interactive box in the debugger.
+* Take a look at nvim-ipy. I want to be able to execute python code from insite vim.
 
 
 ## Snippets
