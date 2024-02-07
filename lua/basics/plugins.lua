@@ -140,15 +140,13 @@ require('packer').startup(function(use)
     use 'lervag/vimtex'
 
     -- aerial
-    require('packer').startup(function()
-        use {
+    use {
           'stevearc/aerial.nvim',
           config = function() require('aerial').setup() end
-        }
-    end)
+    }
 
-    -- Add my own custom plugins
-    --use '/.config/nvim/kuri_plugins/stackman.nvim'
+  -- Add my own custom plugins
+  use '~/Git/SETUP__neovim__plugin__stackman'
 
   local has_plugins, plugins = pcall(require, 'custom.plugins')
   if has_plugins then

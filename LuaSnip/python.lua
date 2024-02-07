@@ -55,4 +55,14 @@ return {
       )
     ),
 
+    s({trig="pa-NullsPerColumn", dscr="Get number of nulls per column"},
+      fmt(
+        [[
+        (<>.isnull().sum().head())
+        ]],
+        { i(1) },
+        { delimiters = "<>" }
+      )
+    ),
+
 }

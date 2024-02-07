@@ -3,6 +3,7 @@ require "basics.keymaps"
 require "basics.abbreviations"
 require "basics.plugins"
 require "basics.colorscheme"
+require "basics.globals"
 
 require "plugin_configs.lsp"
 require "plugin_configs.lsp_signature"
