@@ -145,6 +145,13 @@ require('packer').startup(function(use)
           config = function() require('aerial').setup() end
     }
 
+    -- Note taking
+    use {
+        "epwalsh/obsidian.nvim",
+         tag = "*",
+         requires = { "nvim-lua/plenary.nvim"},
+    }
+
   -- Add my own custom plugins
   use '~/Git/SETUP__neovim__plugin__stackman'
 

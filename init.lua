@@ -25,6 +25,7 @@ require "plugin_configs.everforest"
 require "plugin_configs.luasnip"
 require "plugin_configs.vimtex"
 require "plugin_configs.aerial"
+require "plugin_configs.obsidian"
 
 --> sources:
 -- 1. chris@machine excellent youtube series about neovim.
