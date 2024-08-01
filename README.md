@@ -51,3 +51,18 @@ I followed [this article]() to setup luasnip and to learn how to use it.
 
 ## reload
 [Add the script from this thread](https://stackoverflow.com/questions/72412720/how-to-source-init-lua-without-restarting-neovim)
+
+
+# Notes
+
+* **[01-08-2024]**:  The plugin nullls will not be maintained anymore. I will take it out. There where only two keybindings that i was using there. 
+```lua 
+--# Keybindings
+vim.cmd('map <Leader>lf :lua vim.lsp.buf.formatting_sync(nil, 10000)<CR>')
+vim.cmd('map <Leader>lF :lua vim.lsp.buf.range_formatting()<CR>')
+```
+It would be interesting to investigate these functions further to see if they can be used.
+
+
+
+
