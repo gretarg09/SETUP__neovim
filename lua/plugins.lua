@@ -352,40 +352,6 @@ require("lazy").setup({
             vim.keymap.set('n', 't', ":HopNode<CR>", { noremap = true, silent = true })
         end
     },
-
-    {
-        "jackMort/ChatGPT.nvim",
-        event = "VeryLazy",
-        config = function()
-           -- the model names can be found here --> https://platform.openai.com/docs/models 
-          require("chatgpt").setup({
-                openai_params = {
-                    -- model = "gpt-4-1106-preview",
-                    model = "chatgpt-4o-latest",
-                    frequency_penalty = 0,
-                    presence_penalty = 0,
-                    max_tokens = 4095,
-                    temperature = 0.2,
-                    top_p = 0.1,
-                    n = 1
-                },
-                openai_edit_params = {
-                  model = "chatgpt-4o-latest",
-                  frequency_penalty = 0,
-                  presence_penalty = 0,
-                  temperature = 0,
-                  top_p = 1,
-                  n = 1,
-                }
-	})
-        end,
-        dependencies = {
-          "MunifTanjim/nui.nvim",
-          "nvim-lua/plenary.nvim",
-          "folke/trouble.nvim",
-          "nvim-telescope/telescope.nvim"
-        }
-    },
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
