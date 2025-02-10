@@ -134,3 +134,23 @@ keymap("n", "<leader>a", "<cmd>AerialToggle!<CR>", opts)
 -- NVIMTREE 
 keymap("n", "<C-n>", ":NvimTreeToggle<CR>", opts)
 
+-- DAP
+keymap("n", "<Leader>dl", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" })
+keymap("n", "<Leader>dj", "<cmd>lua require'dap'.step_over()<CR>", { desc = "Debugger step over" })
+keymap("n", "<Leader>dk", "<cmd>lua require'dap'.step_out()<CR>", { desc = "Debugger step out" })
+keymap("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debugger continue" })
+keymap("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })
+
+keymap(
+  "n",
+  "<Leader>dd",
+  "<cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+  { desc = "Debugger set conditional breakpoint" }
+)
+
+keymap("n", "<Leader>de", "<cmd>lua require'dap'.terminate()<CR>", { desc = "Debugger reset" })
+keymap("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugger run last" })
+
+-- rustaceanvim
+keymap("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
+
