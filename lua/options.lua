@@ -1,4 +1,6 @@
+print('loading options')
 -- :help options
+-- :options
 
 local options = {
     backup = false,                          -- creates a backup file
@@ -30,7 +32,7 @@ local options = {
     relativenumber = true,                   -- set relative numbered lines
     numberwidth = 4,                         -- set number column width to 2 {default 4}
     signcolumn = "yes",                      -- always show the sign column, otherwise it would shift the text each time
-    wrap = false,                            -- display lines as one long line
+    wrap = true,                             -- display lines as one long line
     scrolloff = 4,                           -- is one of my fav
     sidescrolloff = 8,
     guifont = "monospace:h17",               -- the font used in graphical neovim applications
@@ -38,18 +40,16 @@ local options = {
     showmatch = true,                        -- Highlight matchin [{()}]
     incsearch = true,                        -- Search as character are entered
 
-    tabstop = 4,                             -- Number of spaces tabs count for
+    tabstop = 4,                             -- Number of spaces tabs counts for.
     softtabstop = 4,
-    shiftwidth = 4
-}
+    shiftwidth = 4,
 
-vim.opt.shortmess:append "c"
+    virtualedit = "block",                    -- Allow virtual editing in visual block mode. see :help virtualedit for more info.
+
+    inccommand = "split",                     -- split the screen and show me the changes that I am about to make in real time.
+}
 
 for k, v in pairs(options) do
     vim.opt[k] = v
 end
 
-vim.cmd "set whichwrap+=<,>,[,],h,l"
-vim.cmd [[set iskeyword+=-]]
---vim.cmd [[set spell spelllang=en_us]] -- I will just need to turn this on one the fly. This is to annoying
-vim.cmd [[set formatoptions-=cro]] -- TODO: this doesn't seem to work

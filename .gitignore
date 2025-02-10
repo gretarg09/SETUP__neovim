@@ -39,3 +39,40 @@ luac.out
 *.x86_64
 *.hex
 
+
+# Neovim Swap, Backup, and Undo Files
+*.swp
+*.swo
+*.bak
+*.un~
+*.log
+
+# Lazy.nvim Plugin and State Files
+lazy-lock.json
+state.nvim
+
+# Plugin directories (avoid committing installed plugins)
+nvim/lazy/
+nvim/site/pack/
+nvim/site/lazy/
+nvim/plugin/
+nvim/autoload/
+
+# LSP, Treesitter, and Debugger Data
+nvim/mason/
+nvim/lsp_servers/
+nvim/lua-language-server/
+nvim/undo/
+nvim/sessions/
+
+# Debug Logs and Crash Reports
+.log/
+log/
+health.log
+session.vim
+
+# Temporary and Cache Files
+.cache/
+.netrwhist
+shada/
+sessions/
