@@ -9,4 +9,5 @@ else
     require "plugins"
     require "options"
     require "keymappings"
+    require "special_functions"
 end
