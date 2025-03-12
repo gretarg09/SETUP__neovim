@@ -10,4 +10,5 @@ else
     require "options"
     require "keymappings"
     require "special_functions"
+    require "folding"
 end

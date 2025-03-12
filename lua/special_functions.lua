@@ -1,6 +1,6 @@
 print("loading special functions")
 
-vim.api.nvim_set_keymap('n', '<C-l>', [[:lua ToggleCheckbox()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>l', [[:lua ToggleCheckbox()<CR>]], { noremap = true, silent = true })
 
 function ToggleCheckbox()
     local line = vim.api.nvim_get_current_line()
