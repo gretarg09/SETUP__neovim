@@ -76,3 +76,5 @@ session.vim
 .netrwhist
 shada/
 sessions/
+
+lazy-lock.json
