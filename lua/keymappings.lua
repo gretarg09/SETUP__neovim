@@ -4,6 +4,7 @@ print('loading keymaps')
 local function find_project_root()
   -- Define your root markers, e.g., .git, package.json, etc.
   local markers = {'.git', 'package.json', 'Cargo.toml', 'pyproject.toml'}
+
   
   -- Use the vim.loop (libuv) library to walk up the directory structure
   local path = vim.fn.expand('%:p:h')
@@ -89,7 +90,6 @@ keymap("x", "J", ":move '>+1<CR>gv-gv", opts)
 keymap("x", "K", ":move '<-2<CR>gv-gv", opts)
 keymap("x", "<C-j>", ":move '>+1<CR>gv-gv", opts)
 keymap("x", "<C-k>", ":move '<-2<CR>gv-gv", opts)
-
 
 -- TERMINAL --
 -- Better terminal navigation

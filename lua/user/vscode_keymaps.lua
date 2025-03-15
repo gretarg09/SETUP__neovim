@@ -15,7 +15,15 @@ keymap({"n", "v"}, "<leader>p", '"+p', opts)
 
 -- General keymaps
 keymap({"n", "v"}, "<leader>t", "<cmd>lua require('vscode').action('workbench.action.terminal.toggleTerminal')<CR>")
+
+-- # Debug
 keymap({"n", "v"}, "<leader>b", "<cmd>lua require('vscode').action('editor.debug.action.toggleBreakpoint')<CR>")
+-- keymap({"n", "v"}, "<leader>da", "<cmd>lua require('vscode').action('workbench.action.debug.selectandstart')<CR>")
+-- keymap({"n", "v"}, "<leader>dt", "<cmd>lua require('vscode').action('workbench.action.debug.stop')<CR>")
+-- keymap({"n", "v"}, "<leader>do", "<cmd>lua require('vscode').action('workbench.action.debug.stepOver')<CR>")
+-- keymap({"n", "v"}, "<leader>dc", "<cmd>lua require('vscode').action('workbench.action.debug.continue')<CR>")
+-- keymap({"n", "v"}, "<leader>de", "<cmd>lua require('vscode').action('editor.debug.action.showDebugHover')<CR>")
+
 keymap({"n", "v"}, "<leader>d", "<cmd>lua require('vscode').action('editor.action.showHover')<CR>")
 keymap({"n", "v"}, "<leader>a", "<cmd>lua require('vscode').action('editor.action.quickFix')<CR>")
 keymap({"n", "v"}, "<leader>sp", "<cmd>lua require('vscode').action('workbench.actions.view.problems')<CR>")
