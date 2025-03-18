@@ -40,6 +40,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Setup lazy.nvim
 require("lazy").setup({
+    -- CATPPUCCIN
     {
         "catppuccin/nvim",
         name = "catppuccin",
@@ -48,6 +49,7 @@ require("lazy").setup({
             vim.cmd.colorscheme("catppuccin")
         end
     },
+    -- NVIM TREESITTER
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
@@ -135,19 +137,23 @@ require("lazy").setup({
         end
 
     },
+    -- NVIM TREESITTER TEXTOBJECTS
     {
         "nvim-treesitter/nvim-treesitter-textobjects"
     },
+    -- NVIM LSP CONFIG
     {
         "neovim/nvim-lspconfig",
         -- end
     },
+    -- MASON
     {
         "williamboman/mason.nvim",
         config = function()
             require("mason").setup()
         end
     },
+    -- MASON LSP CONFIG
     {
         "williamboman/mason-lspconfig.nvim",
         dependencies = {"mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
@@ -202,6 +208,7 @@ require("lazy").setup({
             })
         end
     },
+    -- TELESCOPE
     {
         "nvim-telescope/telescope.nvim",
         requires = {{"nvim-lua/plenary.nvim"}},
@@ -264,6 +271,7 @@ require("lazy").setup({
             })
         end
     },
+    -- NVIM TREE
     {
         'nvim-tree/nvim-tree.lua',
         config = function()
@@ -319,6 +327,7 @@ require("lazy").setup({
             })
         end
     },
+    -- AREAL
     {
         -- TODO fix the icons
         'stevearc/aerial.nvim',
@@ -340,6 +349,7 @@ require("lazy").setup({
 
         end
     },
+   -- HOP
     {
         'smoka7/hop.nvim',
         version = "*",
@@ -352,6 +362,7 @@ require("lazy").setup({
             vim.keymap.set('n', 't', ":HopNode<CR>", { noremap = true, silent = true })
         end
     },
+   -- NVIM CMP
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
@@ -459,7 +470,7 @@ require("lazy").setup({
             }
         end
     },
-
+    -- AVANTE
     {
         "yetone/avante.nvim",
         event = "VeryLazy",
@@ -506,6 +517,7 @@ require("lazy").setup({
             },
         },
     },
+    -- VIMTEX
     {
         "lervag/vimtex",
         lazy = false,     -- we don't want to lazy load VimTeX
@@ -514,6 +526,7 @@ require("lazy").setup({
                 vim.g.vimtex_view_method = "zathura"
          end
     },
+    -- NVIM DAP
     {
         "mfussenegger/nvim-dap",
         config = function ()
@@ -535,10 +548,12 @@ require("lazy").setup({
             end
         end
     },
+    -- NVIM DAP UI
     {
         "rcarriga/nvim-dap-ui",
         dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}
     },
+    -- RUSTACEANVIM
     {
         'mrcjkb/rustaceanvim',
         version = '^5', -- Recommended
@@ -564,6 +579,7 @@ require("lazy").setup({
             }
         end
     },
+    -- RENDER MARKDOWN 
     {
         'MeanderingProgrammer/render-markdown.nvim',
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
@@ -584,6 +600,13 @@ require("lazy").setup({
                 },
             })
         end
+    },
+    -- OBSIDIAN
+    {
+        'obsidian-nvim/obsidian.nvim',
+        dependencies = {"hrsh7th/nvim-cmp", "nvim-telescope/telescope.nvim"},
+        config = function ()
+
+        end
     }
 })
-
