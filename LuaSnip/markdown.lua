@@ -29,6 +29,10 @@ local ms = ls.multi_snippet
 local k = require("luasnip.nodes.key_indexer").new_key
 
 
+local function clipboard()
+    return vim.fn.getreg("+")
+end
+
 return {
     s({trig="link", dscr="Markdown link"},
       fmt( -- The snippet code actually looks like the equation environment it produces.
@@ -36,16 +40,23 @@ return {
              [<>](<>)
         ]],
         -- The insert node is placed in the <> angle brackets
-        { i(1, "LiNk"), i(2, "DeScRiPtIoN") },
+        {
+            i(1, "DeScRiPtIoN"),
+            f(function ()
+                return clipboard()
+            end, {})
+        },
         -- This is where I specify that angle brackets are used as node positions.
         { delimiters = "<>" }
       )
     ),
 
-    s({trig="code", dscr="Code block in markdown"},
+    s({trig="code__python", dscr="Code block in markdown"},
       fmt( -- The snippet code actually looks like the equation environment it produces.
         [[
-            ```<>```
+            ```python
+            <>
+            ```
         ]],
         -- The insert node is placed in the <> angle brackets
         { i(1, 'CoDe') },
@@ -54,4 +65,17 @@ return {
       )
     ),
 
+    s({trig="code__bash", dscr="Code block in markdown"},
+      fmt( -- The snippet code actually looks like the equation environment it produces.
+        [[
+            ```bash
+            <>
+            ```
+        ]],
+        -- The insert node is placed in the <> angle brackets
+        { i(1, 'CoDe') },
+        -- This is where I specify that angle brackets are used as node positions.
+        { delimiters = "<>" }
+      )
+    ),
 }

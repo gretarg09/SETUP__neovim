@@ -606,7 +606,102 @@ require("lazy").setup({
         'obsidian-nvim/obsidian.nvim',
         dependencies = {"hrsh7th/nvim-cmp", "nvim-telescope/telescope.nvim"},
         config = function ()
-
+            require('obsidian').setup({
+                workspaces = {
+                    {
+                        name = "kuris_second_brain",
+                        path = "~/Dropbox/kuris_second_brain",
+                    },
+                },
+                ui = {
+                    enable = false
+                },
+                mappings = {
+                    -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+                    ["gf"] = {
+                      action = function()
+                        return require("obsidian").util.gf_passthrough()
+                      end,
+                      opts = { noremap = false, expr = true, buffer = true },
+                    },
+                    -- Toggle check-boxes.
+                    ["<leader>ch"] = {
+                      action = function()
+                        return require("obsidian").util.toggle_checkbox()
+                      end,
+                      opts = { buffer = true },
+                    },
+                    -- Smart action depending on context, either follow link or toggle checkbox.
+                    ["<leader><cr>"] = {
+                      action = function()
+                        return require("obsidian").util.smart_action()
+                      end,
+                      opts = { buffer = true, expr = true },
+                    }
+                },
+                picker = {
+                    name = "telescope.nvim", -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
+                    note_mappings = {
+                      new = "<C-x>", -- Create a new note from your query.
+                      insert_link = "<C-l>", -- Insert a link to the selected note.
+                    },
+                    tag_mappings = {
+                      tag_note = "<C-x>", -- Add tag(s) to current note.
+                      insert_tag = "<C-l>", -- Insert a tag at the current location.
+                    },
+                },
+            })
+        end
+    },
+    -- IMAGE
+    {
+        "3rd/image.nvim",
+        event = "VeryLazy",
+        dependencies = {
+            {
+                "nvim-treesitter/nvim-treesitter",
+                build = ":TSUpdate",
+                config = function()
+                    require("nvim-treesitter.configs").setup({
+                        ensure_installed = { "markdown" },
+                        highlight = { enable = true },
+                  })
+                end,
+          },
+        },
+        opts = {
+            backend = "kitty",
+            integrations = {
+                markdown = {
+                    enabled = true,
+                    clear_in_insert_mode = false,
+                    download_remote_images = true,
+                    only_render_image_at_cursor = true,
+                    floating_windows = false,
+                    filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+                },
+            },
+            max_width = nil,
+            max_height = nil,
+            max_width_window_percentage = nil,
+            max_height_window_percentage = 50,
+            kitty_method = "normal",
+        },
+    },
+    -- LUASNIP
+    {
+        "L3MON4D3/LuaSnip",
+        -- follow latest release.
+        version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+        -- install jsregexp (optional!).
+        build = "make install_jsregexp",
+        config = function ()
+            require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/LuaSnip/"})
+            require("luasnip").config.set_config({ -- Setting LuaSnip config
+              enable_autosnippets = true,
+              store_selection_keys = "<Tab>", -- Use Tab to trigger visual selection
+            })
         end
     }
 })
+
