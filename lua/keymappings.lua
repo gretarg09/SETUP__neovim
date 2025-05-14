@@ -154,3 +154,5 @@ keymap("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debu
 -- rustaceanvim
 keymap("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
 
+-- IMG CLIP
+keymap("n", "<leader>p", "<cmd>PasteImage<cr>", { desc = "Paste image from system clipboard" })

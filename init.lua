@@ -11,4 +11,5 @@ else
     require "keymappings"
     require "special_functions"
     require "folding"
+    require "autocommands"
 end

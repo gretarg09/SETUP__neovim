@@ -189,21 +189,21 @@ require("lazy").setup({
             )
 
             -- Create a command `:Format` local to the LSP buffer
-            -- vim.api.nvim_buf_create_user_command(
-            --     bufnr,
-            --     'Format',
-            --     function(_)
-            --         vim.lsp.buf.format()
-            --     end,
-            --     { desc = 'Format current buffer with LSP' }
-            -- )
+            vim.api.nvim_buf_create_user_command(
+                bufnr,
+                'Format',
+                function(_)
+                    vim.lsp.buf.format()
+                end,
+                { desc = 'Format current buffer with LSP' }
+            )
         end
 
         require("mason-lspconfig").setup()
         require("mason-lspconfig").setup_handlers({
             ["lua_ls"] = function ()
                 require("lspconfig").lua_ls.setup {
-                    on_attach = generic_on_attach(),
+                    on_attach = generic_on_attach,
                     settings = {
                         Lua = {
                             diagnostics = {
@@ -226,7 +226,7 @@ require("lazy").setup({
 
             function (server_name) -- default handler callback
                 require("lspconfig")[server_name].setup {
-                    on_attach = generic_on_attach(),
+                    on_attach = generic_on_attach,
                 }
             end,
             -- see :h mason-lspconfig-automatic-server-setup for more information.
@@ -514,24 +514,8 @@ require("lazy").setup({
         --- The below dependencies are optional,
         "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
         "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+        -- "HakonHarnes/img-clip.nvim", -- [GAG]: I am already installing this plugin
         -- "zbirenbaum/copilot.lua", -- for providers='copilot'
-        {
-            -- support for image pasting
-            "HakonHarnes/img-clip.nvim",
-            event = "VeryLazy",
-            opts = {
-                -- recommended settings
-                default = {
-                    embed_image_as_base64 = false,
-                    prompt_for_file_name = false,
-                    drag_and_drop = {
-                        insert_mode = true,
-                    },
-                    -- required for Windows users
-                    use_absolute_path = true,
-                },
-            },
-        },
         {
             -- Make sure to set this up properly if you have lazy=true
             'MeanderingProgrammer/render-markdown.nvim',
@@ -711,6 +695,56 @@ require("lazy").setup({
         max_width_window_percentage = nil,
         max_height_window_percentage = 50,
         kitty_method = "normal",
+    },
+},
+-- IMG - CLIP
+{
+    "HakonHarnes/img-clip.nvim",
+    event = "VeryLazy",
+    opts = {
+        -- recommended settings
+        default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+                insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = false,
+            file_name = function ()
+                local now = os.date("*t")
+                local timestamp = string.format(
+                    "%04d%02d%02d%02d%02d%02d",
+                    now.year,
+                    now.month,
+                    now.day,
+                    now.hour,
+                    now.min,
+                    now.sec
+                )
+                local random_number = math.random(0, 999)
+                local filename = string.format("%s__%03d", timestamp, random_number)
+                return filename
+            end,
+            dir_path = function ()
+                local Path = require("plenary.path")
+
+                local filepath = vim.api.nvim_buf_get_name(0) -- Fetching the full path of the file in the buffer
+                if filepath == "" then
+                    return nil -- fallback to default
+                end
+
+                local file_dir = Path:new(filepath):parent()
+                local images_dir = file_dir:joinpath("images")
+
+                -- Check if ./images exists and is a directory
+                if images_dir:exists() and images_dir:is_dir() then
+                    return images_dir:absolute()
+                end
+
+                return 'assets'
+            end
+        },
     },
 },
 -- LUASNIP

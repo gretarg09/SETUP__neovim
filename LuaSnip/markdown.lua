@@ -50,7 +50,6 @@ return {
         { delimiters = "<>" }
       )
     ),
-
     s({trig="code__python", dscr="Code block in markdown"},
       fmt( -- The snippet code actually looks like the equation environment it produces.
         [[
