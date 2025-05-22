@@ -83,6 +83,4 @@ end
 m.ToggleCheckbox = ToggleCheckbox
 m.OpenGithub = OpenGithub
 
-vim.keymap.set('n', '<leader>l', ToggleCheckbox, { noremap = true, silent = true })
-
 return m

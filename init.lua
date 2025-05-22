@@ -11,5 +11,5 @@ else
     require "keymappings"
     require "special_functions"
     require "folding"
-    require "autocommands"
+    require "autocommands" --> this needs to be the last to load.
 end

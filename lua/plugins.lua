@@ -168,7 +168,11 @@ require("lazy").setup({
             nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
             nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
             nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-            nmap('gl', vim.diagnostic.open_float, 'Show diagnostic')
+
+            -- DiAgnOsTiCs
+            -- nmap('l', vim.diagnostic.open_float, 'Show diagnostic') --> now set as autocommand 
+            nmap('gl', require('telescope.builtin').diagnostics, 'Show diagnostic in telescope')
+
             nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
             nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
             nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
@@ -237,10 +241,15 @@ require("lazy").setup({
 {
     "nvim-telescope/telescope.nvim",
     requires = {{"nvim-lua/plenary.nvim"}},
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = {
+        'nvim-lua/plenary.nvim',
+        "nvim-telescope/telescope-dap.nvim"
+    },
     config = function()
+        local telescope = require('telescope')
         local actions = require("telescope.actions")
-        require('telescope').setup({
+
+        telescope.setup({
             defaults = {
                 mappings = {
                      i = {
@@ -294,6 +303,8 @@ require("lazy").setup({
                 }
             }
         })
+
+        telescope.load_extension("dap")
     end
 },
 -- NVIM TREE
@@ -561,6 +572,35 @@ require("lazy").setup({
 {
     "rcarriga/nvim-dap-ui",
     dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}
+},
+-- NVIM DAP PYTHON
+{
+  "mfussenegger/nvim-dap-python",
+  dependencies = {
+    "mfussenegger/nvim-dap",
+    "rcarriga/nvim-dap-ui",
+  },
+  config = function()
+      require("dap-python").setup("/usr/bin/python")
+      require("dap").configurations.python = {
+          {
+              type = "python",
+              request = "launch",
+              name = "Debug with .venv",
+              program = "${file}",
+              pythonPath = function()
+                  -- detect project venv
+                  local global_interpreter = "/usr/bin/python"
+                  local local_env_interpreter = vim.fn.getcwd() .. "/.venv/bin/python"
+                  if vim.fn.executable(local_env_interpreter) == 1 then
+                      return local_env_interpreter
+                  else
+                      return global_interpreter
+                  end
+              end,
+          },
+      }
+  end,
 },
 -- RUSTACEANVIM
 {

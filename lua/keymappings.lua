@@ -135,11 +135,13 @@ keymap("n", "<leader>a", "<cmd>AerialToggle!<CR>", opts)
 keymap("n", "<C-n>", ":NvimTreeToggle<CR>", opts)
 
 -- DAP
-keymap("n", "<Leader>dl", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" })
+keymap("n", "<Leader>dn", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" }) -- debug next
 keymap("n", "<Leader>dj", "<cmd>lua require'dap'.step_over()<CR>", { desc = "Debugger step over" })
 keymap("n", "<Leader>dk", "<cmd>lua require'dap'.step_out()<CR>", { desc = "Debugger step out" })
 keymap("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debugger continue" })
+
 keymap("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })
+keymap("n", "<Leader>dl", "<cmd>lua require('telescope').extensions.dap.list_breakpoints()<CR>", { desc = "List all breakpoints" })
 
 keymap(
   "n",
