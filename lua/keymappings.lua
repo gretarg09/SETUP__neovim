@@ -128,8 +128,7 @@ keymap('n', '<leader>fm', builtin.marks, {})
 keymap('n', '<leader>fh', builtin.help_tags, {})
 
 -- AERIAL
-keymap("n", "<leader>a", "<cmd>AerialToggle!<CR>", opts)
-
+keymap("n", "<leader>o", "<cmd>AerialToggle!<CR>", opts) -- o for overview
 
 -- NVIMTREE 
 keymap("n", "<C-n>", ":NvimTreeToggle<CR>", opts)
@@ -142,6 +141,7 @@ keymap("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debu
 
 keymap("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })
 keymap("n", "<Leader>dl", "<cmd>lua require('telescope').extensions.dap.list_breakpoints()<CR>", { desc = "List all breakpoints" })
+keymap("n", "<Leader>do", ":lua require('dapui').toggle()<CR>", { desc = "Toggle dapui" })
 
 keymap(
   "n",
