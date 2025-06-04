@@ -38,6 +38,7 @@ vim.opt.rtp:prepend(lazypath)
 -- vim.g.mapleader = " "
 -- vim.g.maplocalleader = "\\"
 
+
 -- Setup lazy.nvim
 require("lazy").setup({
 -- CATPPUCCIN
@@ -660,7 +661,8 @@ require("lazy").setup({
             workspaces = {
                 {
                     name = "kuris_second_brain",
-                    path = "~/Dropbox/kuris_second_brain",
+                    -- path = "~/Dropbox/kuris_second_brain",
+                    path = "~/Git/kuris_second_brain",
                 },
             },
             ui = {
@@ -677,7 +679,7 @@ require("lazy").setup({
                 -- Toggle check-boxes.
                 ["<leader>ch"] = {
                   action = function()
-                    return require("obsidian").util.toggle_checkbox()
+                    return require("obsidGitian").util.toggle_checkbox()
                   end,
                   opts = { buffer = true },
                 },
@@ -804,4 +806,3 @@ require("lazy").setup({
     end
 }
 })
-
