@@ -203,9 +203,9 @@ require("lazy").setup({
                 { desc = 'Format current buffer with LSP' }
             )
         end
-
-        require("mason-lspconfig").setup()
-        require("mason-lspconfig").setup_handlers({
+        require("mason-lspconfig").setup({
+            automatic_installation = true,
+            handlers = {
             ["lua_ls"] = function ()
                 require("lspconfig").lua_ls.setup {
                     on_attach = generic_on_attach,
@@ -235,7 +235,8 @@ require("lazy").setup({
                 }
             end,
             -- see :h mason-lspconfig-automatic-server-setup for more information.
-        })
+        }
+    })
     end
 },
 -- TELESCOPE
@@ -605,31 +606,31 @@ require("lazy").setup({
   end,
 },
 -- RUSTACEANVIM
-{
-    'mrcjkb/rustaceanvim',
-    version = '^5', -- Recommended
-    lazy = false, -- This plugin is already lazy
-    config = function()
-        -- This part of the code is taken from the following video: https://www.youtube.com/watch?v=E2mKJ73M9pg
-        local mason_registry = require('mason-registry')
-        local codelldb = mason_registry.get_package("codelldb")
-
-        local extension_path = codelldb:get_install_path() .. "/extension/"
-        print('the extension path registry')
-        print(extension_path)
-
-        local codelldb_path = extension_path .. "adapter/codelldb"
-        local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
-
-        local cfg = require('rustaceanvim.config')
-
-        vim.g.rustaceanvim = {
-            dap = {
-                adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
-            },
-        }
-    end
-},
+-- {
+--     'mrcjkb/rustaceanvim',
+--     version = '^5', -- Recommended
+--     lazy = false, -- This plugin is already lazy
+--     config = function()
+--         -- This part of the code is taken from the following video: https://www.youtube.com/watch?v=E2mKJ73M9pg
+--         local mason_registry = require('mason-registry')
+--         local codelldb = mason_registry.get_package("codelldb")
+--
+--         local extension_path = codelldb:get_install_path() .. "/extension/"
+--         print('the extension path registry')
+--         print(extension_path)
+--
+--         local codelldb_path = extension_path .. "adapter/codelldb"
+--         local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
+--
+--         local cfg = require('rustaceanvim.config')
+--
+--         vim.g.rustaceanvim = {
+--             dap = {
+--                 adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
+--             },
+--         }
+--     end
+-- },
 -- RENDER MARKDOWN 
 {
     'MeanderingProgrammer/render-markdown.nvim',
@@ -706,40 +707,40 @@ require("lazy").setup({
     end
 },
 -- IMAGE
-{
-    "3rd/image.nvim",
-    event = "VeryLazy",
-    dependencies = {
-        {
-            "nvim-treesitter/nvim-treesitter",
-            build = ":TSUpdate",
-            config = function()
-                require("nvim-treesitter.configs").setup({
-                    ensure_installed = { "markdown" },
-                    highlight = { enable = true },
-              })
-            end,
-      },
-    },
-    opts = {
-        backend = "kitty",
-        integrations = {
-            markdown = {
-                enabled = true,
-                clear_in_insert_mode = false,
-                download_remote_images = true,
-                only_render_image_at_cursor = true,
-                floating_windows = false,
-                filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
-            },
-        },
-        max_width = nil,
-        max_height = nil,
-        max_width_window_percentage = nil,
-        max_height_window_percentage = 50,
-        kitty_method = "normal",
-    },
-},
+-- {
+--     "3rd/image.nvim",
+--     event = "VeryLazy",
+--     dependencies = {
+--         {
+--             "nvim-treesitter/nvim-treesitter",
+--             build = ":TSUpdate",
+--             config = function()
+--                 require("nvim-treesitter.configs").setup({
+--                     ensure_installed = { "markdown" },
+--                     highlight = { enable = true },
+--               })
+--             end,
+--       },
+--     },
+--     opts = {
+--         backend = "kitty",
+--         integrations = {
+--             markdown = {
+--                 enabled = true,
+--                 clear_in_insert_mode = false,
+--                 download_remote_images = true,
+--                 only_render_image_at_cursor = true,
+--                 floating_windows = false,
+--                 filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+--             },
+--         },
+--         max_width = nil,
+--         max_height = nil,
+--         max_width_window_percentage = nil,
+--         max_height_window_percentage = 50,
+--         kitty_method = "normal",
+--     },
+-- },
 -- IMG - CLIP
 {
     "HakonHarnes/img-clip.nvim",
