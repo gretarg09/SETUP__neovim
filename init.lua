@@ -12,4 +12,5 @@ else
     require "special_functions"
     require "folding"
     require "autocommands" --> this needs to be the last to load.
+    require "visidata"
 end

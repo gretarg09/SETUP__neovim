@@ -160,6 +160,7 @@ require("lazy").setup({
     dependencies = {"mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
     config = function()
         generic_on_attach = function(_, bufnr)
+            print("LSP on_attach called for buffer " .. bufnr)
             local nmap = function (keys, func, description)
                 vim.keymap.set('n', keys, func, { buffer = bufnr, desc = 'LSP: ' .. description })
             end
@@ -206,37 +207,62 @@ require("lazy").setup({
         require("mason-lspconfig").setup({
             automatic_installation = true,
             handlers = {
-            ["lua_ls"] = function ()
-                require("lspconfig").lua_ls.setup {
-                    on_attach = generic_on_attach,
-                    settings = {
-                        Lua = {
-                            diagnostics = {
-                                globals = { "vim" }, -- allow use of `vim`, flag others like `foo`
-                                enable = true,
-                            },
-                            workspace = {
-                                checkThirdParty = false, -- avoid prompts
-                            },
-                            hint = {
-                                enable = true, -- optional but nice!
-                            },
-                            telemetry = {
-                                enable = false,
+                -- Default handler
+                function (server_name)
+                    require("lspconfig")[server_name].setup {
+                        on_attach = generic_on_attach,
+                    }
+                end,
+
+                -- Lua specific handler
+                ["lua_ls"] = function ()
+                    require("lspconfig").lua_ls.setup {
+                        on_attach = generic_on_attach,
+                        settings = {
+                            Lua = {
+                                diagnostics = {
+                                    globals = { "vim" }, -- allow use of `vim`, flag others like `foo`
+                                    enable = true,
+                                },
+                                workspace = {
+                                    checkThirdParty = false, -- avoid prompts
+                                },
+                                hint = {
+                                    enable = true, -- optional but nice!
+                                },
+                                telemetry = {
+                                    enable = false,
+                                },
                             },
                         },
-                    },
-                }
-            end,
+                    }
+                end,
 
-            function (server_name) -- default handler callback
-                require("lspconfig")[server_name].setup {
-                    on_attach = generic_on_attach,
-                }
-            end,
+                -- Pyright specific handler  
+                ["pyright"] = function ()
+                    require("lspconfig").pyright.setup {
+                        on_attach = generic_on_attach,
+                        settings = {
+                            python = {
+                                analysis = {
+                                    autoSearchPaths = true,
+                                    diagnosticMode = "openFilesOnly",
+                                    useLibraryCodeForTypes = true
+                                }
+                            }
+                        }
+                    }
+                end,
+
+                -- Ruff specific handler
+                ["ruff"] = function ()
+                    require("lspconfig").ruff.setup {
+                        on_attach = generic_on_attach,
+                    }
+                end,
+            },
             -- see :h mason-lspconfig-automatic-server-setup for more information.
-        }
-    })
+        })
     end
 },
 -- TELESCOPE
@@ -556,12 +582,30 @@ require("lazy").setup({
 
         local dap, dapui = require("dap"), require("dapui")
 
+        -- Set up breakpoint signs with red circle
+        vim.fn.sign_define('DapBreakpoint', { text='●', texthl='DapBreakpoint', linehl='', numhl=''})
+        vim.fn.sign_define('DapBreakpointCondition', { text='◆', texthl='DapBreakpointCondition', linehl='', numhl=''})
+        vim.fn.sign_define('DapBreakpointRejected', { text='○', texthl='DapBreakpointRejected', linehl='', numhl=''})
+        vim.fn.sign_define('DapStopped', { text='→', texthl='DapStopped', linehl='DapStoppedLine', numhl=''})
+        
+        -- Set up highlight colors for breakpoint signs
+        vim.api.nvim_set_hl(0, 'DapBreakpoint', { fg = '#e51400' })
+        vim.api.nvim_set_hl(0, 'DapBreakpointCondition', { fg = '#ffcc00' })
+        vim.api.nvim_set_hl(0, 'DapBreakpointRejected', { fg = '#888888' })
+        vim.api.nvim_set_hl(0, 'DapStopped', { fg = '#00ff00' })
+        vim.api.nvim_set_hl(0, 'DapStoppedLine', { bg = '#2a2a2a' })
+
         dap.listeners.before.attach.dapui_config = function()
           dapui.open()
         end
         dap.listeners.before.launch.dapui_config = function()
           dapui.open()
         end
+
+        dap.defaults.fallback.external_terminal = { -- GAG: Needed for the visidata logic to work.
+            command = "alacritty",
+            args = { "--hold", "--command" },
+        }
         -- GAG : I don't want dapui to close down. 
         -- dap.listeners.before.event_terminated.dapui_config = function() 
         --   dapui.close()
@@ -584,26 +628,37 @@ require("lazy").setup({
     "rcarriga/nvim-dap-ui",
   },
   config = function()
-      require("dap-python").setup("/usr/bin/python")
-      require("dap").configurations.python = {
-          {
-              type = "python",
-              request = "launch",
-              name = "Debug with .venv",
-              program = "${file}",
-              pythonPath = function()
-                  -- detect project venv
-                  local global_interpreter = "/usr/bin/python"
-                  local local_env_interpreter = vim.fn.getcwd() .. "/.venv/bin/python"
-                  if vim.fn.executable(local_env_interpreter) == 1 then
-                      return local_env_interpreter
-                  else
-                      return global_interpreter
-                  end
-              end,
-          },
-      }
+      require("dap-python").setup("/home/gretar/.virtualenvs/debugpy/bin/python")
+      
+      local dap = require("dap")
+      table.insert(dap.configurations.python, {
+          type = "python",
+          request = "launch",
+          name = "Debug with .venv",
+          program = "${file}",
+          pythonPath = function()
+              -- detect project venv
+              local global_interpreter = "/home/gretar/.virtualenvs/debugpy/bin/python"
+              local local_env_interpreter = vim.fn.getcwd() .. "/.venv/bin/python"
+              if vim.fn.executable(local_env_interpreter) == 1 then
+                  return local_env_interpreter
+              else
+                  return global_interpreter
+              end
+          end,
+      })
   end,
+},
+-- MARKS
+{
+    'chentoast/marks.nvim',
+    config = function()
+        require'marks'.setup {
+            default_mappings = true,
+            signs = true,
+            mappings = {}
+        }
+    end
 },
 -- RUSTACEANVIM
 -- {
@@ -805,5 +860,18 @@ require("lazy").setup({
           store_selection_keys = "<Tab>", -- Use Tab to trigger visual selection
         })
     end
-}
+},
+-- SUPERMAVEN
+{ 
+    "supermaven-inc/supermaven-nvim",
+    config = function()
+        require("supermaven-nvim").setup({
+            keymaps = {
+                accept_suggestion = "<C-f>",
+                clear_suggestion = "<C-]>",
+                accept_word = "<C-j>",
+            },
+        })
+    end,
+},
 })
