@@ -159,109 +159,90 @@ require("lazy").setup({
     "williamboman/mason-lspconfig.nvim",
     dependencies = {"mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
     config = function()
-        generic_on_attach = function(_, bufnr)
-            print("LSP on_attach called for buffer " .. bufnr)
-            local nmap = function (keys, func, description)
-                vim.keymap.set('n', keys, func, { buffer = bufnr, desc = 'LSP: ' .. description })
-            end
-
-            nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-            nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-            nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-            nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-            nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-
-            -- DiAgnOsTiCs
-            -- nmap('l', vim.diagnostic.open_float, 'Show diagnostic') --> now set as autocommand 
-            nmap('gl', require('telescope.builtin').diagnostics, 'Show diagnostic in telescope')
-
-            nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-            nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-            nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-            nmap('K', vim.lsp.buf.hover, 'Hover Documentation') -- See `:help K` for why this keymap
-            nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
-
-            -- -- Lesser used LSP functionality
-            nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-            nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-            nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-
-            nmap(
-                '<leader>wl',
-                function()
-                    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-                end,
-                '[W]orkspace [L]ist Folders'
-            )
-
-            -- Create a command `:Format` local to the LSP buffer
-            vim.api.nvim_buf_create_user_command(
-                bufnr,
-                'Format',
-                function(_)
-                    vim.lsp.buf.format()
-                end,
-                { desc = 'Format current buffer with LSP' }
-            )
-        end
         require("mason-lspconfig").setup({
+            ensure_installed = { "lua_ls", "pyright", "ruff" },
             automatic_installation = true,
-            handlers = {
-                -- Default handler
-                function (server_name)
-                    require("lspconfig")[server_name].setup {
-                        on_attach = generic_on_attach,
-                    }
-                end,
+        })
 
-                -- Lua specific handler
-                ["lua_ls"] = function ()
-                    require("lspconfig").lua_ls.setup {
-                        on_attach = generic_on_attach,
-                        settings = {
-                            Lua = {
-                                diagnostics = {
-                                    globals = { "vim" }, -- allow use of `vim`, flag others like `foo`
-                                    enable = true,
-                                },
-                                workspace = {
-                                    checkThirdParty = false, -- avoid prompts
-                                },
-                                hint = {
-                                    enable = true, -- optional but nice!
-                                },
-                                telemetry = {
-                                    enable = false,
-                                },
-                            },
-                        },
-                    }
-                end,
-
-                -- Pyright specific handler  
-                ["pyright"] = function ()
-                    require("lspconfig").pyright.setup {
-                        on_attach = generic_on_attach,
-                        settings = {
-                            python = {
-                                analysis = {
-                                    autoSearchPaths = true,
-                                    diagnosticMode = "openFilesOnly",
-                                    useLibraryCodeForTypes = true
-                                }
-                            }
-                        }
-                    }
-                end,
-
-                -- Ruff specific handler
-                ["ruff"] = function ()
-                    require("lspconfig").ruff.setup {
-                        on_attach = generic_on_attach,
-                    }
-                end,
+        -- Configure servers directly
+        require("lspconfig").lua_ls.setup({
+            settings = {
+                Lua = {
+                    diagnostics = {
+                        globals = { "vim" },
+                        enable = true,
+                    },
+                    workspace = {
+                        checkThirdParty = false,
+                    },
+                    hint = {
+                        enable = true,
+                    },
+                    telemetry = {
+                        enable = false,
+                    },
+                },
             },
-            -- see :h mason-lspconfig-automatic-server-setup for more information.
+        })
+
+        require("lspconfig").pyright.setup({
+            settings = {
+                python = {
+                    analysis = {
+                        autoSearchPaths = true,
+                        diagnosticMode = "openFilesOnly",
+                        useLibraryCodeForTypes = true
+                    }
+                }
+            }
+        })
+
+        require("lspconfig").ruff.setup({})
+
+        -- Set up LspAttach autocmd for keybindings
+        vim.api.nvim_create_autocmd('LspAttach', {
+            callback = function(ev)
+                print("LSP attached to buffer " .. ev.buf)
+                local bufnr = ev.buf
+                local nmap = function (keys, func, description)
+                    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = 'LSP: ' .. description })
+                end
+
+                nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+                nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+                nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+                nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+                nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
+
+                nmap('gl', require('telescope.builtin').diagnostics, 'Show diagnostic in telescope')
+
+                nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
+                nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+                nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+                nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
+                nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+
+                nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+                nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+                nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+
+                nmap(
+                    '<leader>wl',
+                    function()
+                        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+                    end,
+                    '[W]orkspace [L]ist Folders'
+                )
+
+                vim.api.nvim_buf_create_user_command(
+                    bufnr,
+                    'Format',
+                    function(_)
+                        vim.lsp.buf.format()
+                    end,
+                    { desc = 'Format current buffer with LSP' }
+                )
+            end,
         })
     end
 },
