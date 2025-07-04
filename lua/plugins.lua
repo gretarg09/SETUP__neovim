@@ -160,8 +160,8 @@ require("lazy").setup({
     dependencies = {"mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
     config = function()
         require("mason-lspconfig").setup({
-            ensure_installed = { "lua_ls", "pyright", "ruff" },
-            automatic_installation = true,
+            -- ensure_installed = { "lua_ls", "pyright", "ruff" },
+            automatic_installation = false,
         })
 
         -- Configure servers directly
