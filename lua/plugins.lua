@@ -157,7 +157,7 @@ require("lazy").setup({
 -- MASON LSP CONFIG
 {
     "williamboman/mason-lspconfig.nvim",
-    dependencies = {"mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
+    dependencies = {"williamboman/mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
     config = function()
         require("mason-lspconfig").setup({
             -- ensure_installed = { "lua_ls", "pyright", "ruff" },
@@ -191,13 +191,21 @@ require("lazy").setup({
                     analysis = {
                         autoSearchPaths = true,
                         diagnosticMode = "openFilesOnly",
-                        useLibraryCodeForTypes = true
+                        useLibraryCodeForTypes = true,
+                        typeCheckingMode = "basic",
+                        disableOrganizeImports = true,  -- Let Ruff handle import organization
                     }
                 }
             }
         })
 
-        require("lspconfig").ruff.setup({})
+        require("lspconfig").ruff.setup({
+            init_options = {
+                settings = {
+                    args = {},
+                }
+            }
+        })
 
         -- Set up LspAttach autocmd for keybindings
         vim.api.nvim_create_autocmd('LspAttach', {
@@ -610,7 +618,7 @@ require("lazy").setup({
   },
   config = function()
       require("dap-python").setup("/home/gretar/.virtualenvs/debugpy/bin/python")
-      
+
       local dap = require("dap")
       table.insert(dap.configurations.python, {
           type = "python",
