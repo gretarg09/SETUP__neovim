@@ -37,17 +37,16 @@ require('ufo').setup({
 })
 
 -- Refresh folds on insert/leave. This forces neovim to update the folds when exit insert mode.
-vim.api.nvim_create_autocmd(
-  { "TextChanged", "TextChangedI", "InsertLeave", "BufWinEnter" },
-  {
-    callback = function()
-      if vim.bo.buftype == "" then
-        vim.cmd("silent! normal! zX")
-      end
-    end,
-  }
-)
-
+-- vim.api.nvim_create_autocmd(
+--   { "TextChanged", "TextChangedI", "InsertLeave", "BufWinEnter" },
+--   {
+--     callback = function()
+--       if vim.bo.buftype == "" then
+--         vim.cmd("silent! normal! zX")
+--       end
+--     end,
+--   }
+-- )
 
 -- Remember folds per file
 vim.opt.viewoptions:append("folds")
