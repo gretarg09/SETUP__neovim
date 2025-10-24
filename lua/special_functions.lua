@@ -1,6 +1,5 @@
 print("loading special functions")
 
-
 local m = {}
 
 function ToggleCheckbox()
@@ -80,7 +79,126 @@ function _fetch_git_root()
     return git_root
 end
 
+
+function OpenImageWithSwayimg()
+
+    -- Detects image links under the cursor and opens them with swayimg. The function supports:
+    -- Markdown image syntax: ![alt](path)
+    -- Direct image file paths_ image.pnd, path/to/image.png, etc.
+    -- Various iamge formats: PNG, JPG, JPEG, GIF, WEBP, BMP, TIFF, and SVG files
+    -- Relative and absolute paths
+
+    local line = vim.api.nvim_get_current_line()
+    local cursor_col = vim.api.nvim_win_get_cursor(0)[2] -- nvim_win_get_cursor returns a table with the cursor position: 1 for line and 2 for column
+    local image_path = _find_image_at_cursor(line, cursor_col)
+
+    if not image_path then
+        print("No image found under cursor")
+        return
+    end
+
+    image_path = _handle_relative_paths(image_path)
+
+    if not _check_if_file_exists(image_path) then
+        return
+    end
+
+    -- Open the image with swayimg
+    _open_image(image_path)
+end
+
+function _find_image_at_cursor(line, cursor_col )
+
+    -- Pattern to match image links: ![alt](path) or just image file paths
+    local image_patterns = {
+        "!%[.-%]%((.-)%)",  -- Markdown image syntax ![alt](path)
+        "(%S+%.png)",       -- .png files
+        "(%S+%.jpg)",       -- .jpg files
+        "(%S+%.jpeg)",      -- .jpeg files
+        "(%S+%.gif)",       -- .gif files
+        "(%S+%.webp)",      -- .webp files
+        "(%S+%.bmp)",       -- .bmp files
+        "(%S+%.tiff)",      -- .tiff files
+        "(%S+%.svg)"        -- .svg files
+    }
+
+    -- Find the first image link on the right of the cursor OR under the cursor (and to the right).
+    local image_path = nil
+    local closest_image_path = nil
+    local closest_match_start = nil
+
+    -- Find the closest image link to the right of the cursor
+    for _, pattern in ipairs(image_patterns) do
+        local start_pos = 1
+        while start_pos <= #line do -- #line returns the length of the string that is stored in line
+            local match_start, match_end, captured = string.find(line, pattern, start_pos)
+            if match_start then
+                -- Check if cursor is within this image link
+                if cursor_col >= match_start - 1 and cursor_col <= match_end then
+                    if captured then
+                        image_path = captured
+                        break
+                    else
+                        print('Error: No captured text found, each statement should have a captured group so this should never happen')
+                    end
+
+                -- Check if this is the closest image link to the right of cursor
+                elseif match_start > cursor_col and (not closest_match_start or match_start < closest_match_start) then
+                    closest_match_start = match_start
+                    if captured then
+                        closest_image_path = captured
+                    else
+                        print('Error: No captured text found, each statement should have a captured group so this should never happen')
+                    end
+                end
+                start_pos = match_end + 1
+            else
+                break
+            end
+        end
+        if image_path then break end
+    end
+
+    -- If no image found under cursor, use the closest one to the right
+    if not image_path and closest_image_path then
+        image_path = closest_image_path
+    end
+
+    return image_path
+end
+
+function _check_if_file_exists(file_path)
+    -- Check if file exists
+    if not string.match(file_path, "^https?://") then
+        local file = io.open(file_path, "r")
+        if not file then
+            print("Image file not found: " .. file_path)
+            return false
+        end
+        file:close()
+    end
+    return true
+end
+
+
+function _handle_relative_paths(image_path)
+    if not string.match(image_path, "^/") and not string.match(image_path, "^https?://") then
+        local current_file_dir = vim.fn.expand("%:p:h")
+        image_path = current_file_dir .. "/" .. image_path
+    end
+    return image_path
+end
+
+function _open_image(image_path)
+    vim.fn.jobstart({ "swayimg", image_path }, { detach = true })
+    print("Opening image: " .. image_path)
+    return true
+end
+
+
 m.ToggleCheckbox = ToggleCheckbox
 m.OpenGithub = OpenGithub
+m.OpenImageWithSwayimg = OpenImageWithSwayimg
+m._find_image_at_cursor = _find_image_at_cursor
 
 return m

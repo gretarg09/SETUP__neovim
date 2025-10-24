@@ -73,7 +73,12 @@ require("lazy").setup({
                 "markdown",
                 "markdown_inline",
                 "latex",
-                "bibtex"
+                "bibtex",
+                "svelte",
+                "javascript",
+                "typescript",
+                "html",
+                "css",
             },
             sync_install = false,
             auto_install = true, -- auto install relevant parser while opening a file if parser is not found.
@@ -198,6 +203,8 @@ require("lazy").setup({
         })
 
         require("lspconfig").ruff.setup({})
+
+        require("lspconfig").svelte.setup({})
 
         -- Set up LspAttach autocmd for keybindings
         vim.api.nvim_create_autocmd('LspAttach', {
@@ -558,6 +565,9 @@ require("lazy").setup({
 -- NVIM DAP
 {
     "mfussenegger/nvim-dap",
+    dependencies = {
+        "jbyuki/one-small-step-for-vimkind" -- for lua debugging
+    },
     config = function ()
         require("dapui").setup()
 
@@ -568,7 +578,7 @@ require("lazy").setup({
         vim.fn.sign_define('DapBreakpointCondition', { text='◆', texthl='DapBreakpointCondition', linehl='', numhl=''})
         vim.fn.sign_define('DapBreakpointRejected', { text='○', texthl='DapBreakpointRejected', linehl='', numhl=''})
         vim.fn.sign_define('DapStopped', { text='→', texthl='DapStopped', linehl='DapStoppedLine', numhl=''})
-        
+
         -- Set up highlight colors for breakpoint signs
         vim.api.nvim_set_hl(0, 'DapBreakpoint', { fg = '#e51400' })
         vim.api.nvim_set_hl(0, 'DapBreakpointCondition', { fg = '#ffcc00' })
@@ -583,17 +593,32 @@ require("lazy").setup({
           dapui.open()
         end
 
+        -- VISIDATA
         dap.defaults.fallback.external_terminal = { -- GAG: Needed for the visidata logic to work.
             command = "alacritty",
             args = { "--hold", "--command" },
         }
-        -- GAG : I don't want dapui to close down. 
-        -- dap.listeners.before.event_terminated.dapui_config = function() 
-        --   dapui.close()
-        -- end
-        -- dap.listeners.before.event_exited.dapui_config = function()
-        --   dapui.close()
-        -- end
+
+        -- LUA DEBUGGING --> from one-small-step-for-vimkind
+        dap.configurations.lua = {
+            {
+                type = 'nlua',
+                request = 'attach',
+                name = "Attach to running Neovim instance",
+            }
+        }
+
+        -- From one-small-step-for-vimkind
+        dap.adapters.nlua = function(callback, config)
+            callback(
+                {
+                    type = 'server',
+                    host = config.host or "127.0.0.1",
+                    port = config.port or 8086
+                }
+            )
+        end
+
     end
 },
 -- NVIM DAP UI
@@ -609,7 +634,7 @@ require("lazy").setup({
     "rcarriga/nvim-dap-ui",
   },
   config = function()
-      require("dap-python").setup("/home/gretar/.virtualenvs/debugpy/bin/python")
+      require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
       
       local dap = require("dap")
       table.insert(dap.configurations.python, {
@@ -619,7 +644,7 @@ require("lazy").setup({
           program = "${file}",
           pythonPath = function()
               -- detect project venv
-              local global_interpreter = "/home/gretar/.virtualenvs/debugpy/bin/python"
+              local global_interpreter = "~/.virtualenvs/debugpy/bin/python"
               local local_env_interpreter = vim.fn.getcwd() .. "/.venv/bin/python"
               if vim.fn.executable(local_env_interpreter) == 1 then
                   return local_env_interpreter
@@ -642,31 +667,31 @@ require("lazy").setup({
     end
 },
 -- RUSTACEANVIM
--- {
---     'mrcjkb/rustaceanvim',
---     version = '^5', -- Recommended
---     lazy = false, -- This plugin is already lazy
---     config = function()
---         -- This part of the code is taken from the following video: https://www.youtube.com/watch?v=E2mKJ73M9pg
---         local mason_registry = require('mason-registry')
---         local codelldb = mason_registry.get_package("codelldb")
---
---         local extension_path = codelldb:get_install_path() .. "/extension/"
---         print('the extension path registry')
---         print(extension_path)
---
---         local codelldb_path = extension_path .. "adapter/codelldb"
---         local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
---
---         local cfg = require('rustaceanvim.config')
---
---         vim.g.rustaceanvim = {
---             dap = {
---                 adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
---             },
---         }
---     end
--- },
+{
+    'mrcjkb/rustaceanvim',
+    version = '^5', -- Recommended
+    lazy = false, -- This plugin is already lazy
+    config = function()
+        -- This part of the code is taken from the following video: https://www.youtube.com/watch?v=E2mKJ73M9pg
+        local mason_registry = require('mason-registry')
+        local codelldb = mason_registry.get_package("codelldb")
+
+        local extension_path = codelldb:get_install_path() .. "/extension/"
+        print('the extension path registry')
+        print(extension_path)
+
+        local codelldb_path = extension_path .. "adapter/codelldb"
+        local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
+
+        local cfg = require('rustaceanvim.config')
+
+        vim.g.rustaceanvim = {
+            dap = {
+                adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
+            },
+        }
+    end
+},
 -- RENDER MARKDOWN 
 {
     'MeanderingProgrammer/render-markdown.nvim',
@@ -699,7 +724,7 @@ require("lazy").setup({
                 {
                     name = "kuris_second_brain",
                     -- path = "~/Dropbox/kuris_second_brain",
-                    path = "~/Git/kuris_second_brain",
+                    path = "~/Dropbox/kuris_second_brain",
                 },
             },
             ui = {
@@ -743,89 +768,89 @@ require("lazy").setup({
     end
 },
 -- IMAGE
--- {
---     "3rd/image.nvim",
---     event = "VeryLazy",
---     dependencies = {
---         {
---             "nvim-treesitter/nvim-treesitter",
---             build = ":TSUpdate",
---             config = function()
---                 require("nvim-treesitter.configs").setup({
---                     ensure_installed = { "markdown" },
---                     highlight = { enable = true },
---               })
---             end,
---       },
---     },
---     opts = {
---         backend = "kitty",
---         integrations = {
---             markdown = {
---                 enabled = true,
---                 clear_in_insert_mode = false,
---                 download_remote_images = true,
---                 only_render_image_at_cursor = true,
---                 floating_windows = false,
---                 filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
---             },
---         },
---         max_width = nil,
---         max_height = nil,
---         max_width_window_percentage = nil,
---         max_height_window_percentage = 50,
---         kitty_method = "normal",
---     },
--- },
+{
+    "3rd/image.nvim",
+    event = "VeryLazy",
+    dependencies = {
+        {
+            "nvim-treesitter/nvim-treesitter",
+            build = ":TSUpdate",
+            config = function()
+                require("nvim-treesitter.configs").setup({
+                    ensure_installed = { "markdown" },
+                    highlight = { enable = true },
+              })
+            end,
+      },
+    },
+    opts = {
+        backend = "kitty",
+        integrations = {
+            markdown = {
+                enabled = true,
+                clear_in_insert_mode = false,
+                download_remote_images = true,
+                only_render_image_at_cursor = true,
+                floating_windows = false,
+                filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+            },
+        },
+        max_width = nil,
+        max_height = nil,
+        max_width_window_percentage = nil,
+        max_height_window_percentage = 50,
+        kitty_method = "normal",
+    },
+},
 -- IMG - CLIP
 {
-    "HakonHarnes/img-clip.nvim",
-    event = "VeryLazy",
-    opts = {
-        -- recommended settings
-        default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-                insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = false,
-            file_name = function ()
-                local now = os.date("*t")
-                local timestamp = string.format(
-                    "%04d%02d%02d%02d%02d%02d",
-                    now.year,
-                    now.month,
-                    now.day,
-                    now.hour,
-                    now.min,
-                    now.sec
-                )
-                local random_number = math.random(0, 999)
-                local filename = string.format("%s__%03d", timestamp, random_number)
-                return filename
-            end,
-            dir_path = function ()
-                local Path = require("plenary.path")
-
-                local filepath = vim.api.nvim_buf_get_name(0) -- Fetching the full path of the file in the buffer
-                if filepath == "" then
-                    return nil -- fallback to default
-                end
-
-                local file_dir = Path:new(filepath):parent()
-                local images_dir = file_dir:joinpath("images")
-
-                -- Check if ./images exists and is a directory
-                if images_dir:exists() and images_dir:is_dir() then
-                    return images_dir:absolute()
-                end
-
-                return 'assets'
-            end
+"HakonHarnes/img-clip.nvim",
+event = "VeryLazy",
+opts = {
+    -- recommended settings
+    default = {
+        embed_image_as_base64 = false,
+        prompt_for_file_name = false,
+        drag_and_drop = {
+            insert_mode = true,
         },
+        -- required for Windows users
+        use_absolute_path = false,
+        file_name = function ()
+            local now = os.date("*t")
+            local timestamp = string.format(
+                "%04d%02d%02d%02d%02d%02d",
+                now.year,
+                now.month,
+                now.day,
+                now.hour,
+                now.min,
+                now.sec
+            )
+            local random_number = math.random(0, 999)
+            local filename = string.format("%s__%03d", timestamp, random_number)
+            return filename
+        end,
+        dir_path = function ()
+            local Path = require("plenary.path")
+
+            local filepath = vim.api.nvim_buf_get_name(0) -- Fetching the full path of the file in the buffer
+            if filepath == "" then
+                return nil -- fallback to default
+            end
+
+            local file_dir = Path:new(filepath):parent()
+            local images_dir = file_dir:joinpath("images")
+
+            -- Check if ./images exists and is a directory
+            if images_dir:exists() and images_dir:is_dir() then
+                return images_dir:absolute()
+            end
+
+            return 'assets'
+        end
     },
+},
 },
 -- LUASNIP
 {

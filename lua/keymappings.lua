@@ -140,7 +140,7 @@ keymap("n", "<Leader>dk", "<cmd>lua require'dap'.step_out()<CR>", { desc = "Debu
 keymap("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debugger continue" })
 
 keymap("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })
-keymap("n", "<Leader>dl", "<cmd>lua require('telescope').extensions.dap.list_breakpoints()<CR>", { desc = "List all breakpoints" })
+keymap("n", "<Leader>df", "<cmd>lua require('telescope').extensions.dap.list_breakpoints()<CR>", { desc = "List all breakpoints" })
 keymap("n", "<Leader>do", ":lua require('dapui').toggle()<CR>", { desc = "Toggle dapui" })
 
 keymap(
@@ -150,6 +150,11 @@ keymap(
   { desc = "Debugger set conditional breakpoint" }
 )
 
+-- DAP LUA From one-small-step-for-vimkind
+vim.keymap.set('n', '<leader>dl', function()
+    require"osv".launch({port = 8086})
+end, { noremap = true })
+
 keymap("n", "<Leader>de", "<cmd>lua require'dap'.terminate()<CR>", { desc = "Debugger reset" })
 keymap("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugger run last" })
 
@@ -158,3 +163,31 @@ keymap("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = 
 
 -- IMG CLIP
 keymap("n", "<leader>p", "<cmd>PasteImage<cr>", { desc = "Paste image from system clipboard" })
+
+keymap('n', '<CR>', function()
+      -- Check if this is a special buffer (non-normal buftype)
+      local buftype = vim.bo.buftype
+      if buftype ~= '' then
+          -- For special buffers, use default Enter behavior
+          vim.cmd('normal! ')
+          return
+      end
+
+      local line = vim.api.nvim_get_current_line()
+      local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
+
+      -- Check if there's an image on this line
+      local image_path = require('special_functions')._find_image_at_cursor(line, cursor_col)
+
+      if image_path then
+          -- Open the image
+          print('image path found: ' .. image_path)
+          require('special_functions').OpenImageWithSwayimg()
+      else
+          -- Toggle fold
+          print('no image path')
+          vim.cmd('normal! za')
+      end
+  end, { desc = 'Smart Enter: Open and close folds if no image path is found, if image path is found then open image. ' })
+
+
