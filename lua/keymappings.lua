@@ -138,6 +138,7 @@ keymap("n", "<Leader>dn", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Deb
 keymap("n", "<Leader>dj", "<cmd>lua require'dap'.step_over()<CR>", { desc = "Debugger step over" })
 keymap("n", "<Leader>dk", "<cmd>lua require'dap'.step_out()<CR>", { desc = "Debugger step out" })
 keymap("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debugger continue" })
+keymap("n", "<leader>dt",":lua require('dap-python').test_method()<CR>", { desc = "Debugger continue" })
 
 keymap("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })
 keymap("n", "<Leader>df", "<cmd>lua require('telescope').extensions.dap.list_breakpoints()<CR>", { desc = "List all breakpoints" })
@@ -159,7 +160,7 @@ keymap("n", "<Leader>de", "<cmd>lua require'dap'.terminate()<CR>", { desc = "Deb
 keymap("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugger run last" })
 
 -- rustaceanvim
-keymap("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
+-- keymap("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
 
 -- IMG CLIP
 keymap("n", "<leader>p", "<cmd>PasteImage<cr>", { desc = "Paste image from system clipboard" })

@@ -162,7 +162,7 @@ require("lazy").setup({
 -- MASON LSP CONFIG
 {
     "williamboman/mason-lspconfig.nvim",
-    dependencies = {"mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
+    dependencies = {"williamboman/mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
     config = function()
         require("mason-lspconfig").setup({
             -- ensure_installed = { "lua_ls", "pyright", "ruff" },
@@ -196,13 +196,21 @@ require("lazy").setup({
                     analysis = {
                         autoSearchPaths = true,
                         diagnosticMode = "openFilesOnly",
-                        useLibraryCodeForTypes = true
+                        useLibraryCodeForTypes = true,
+                        typeCheckingMode = "basic",
+                        disableOrganizeImports = true,  -- Let Ruff handle import organization
                     }
                 }
             }
         })
 
-        require("lspconfig").ruff.setup({})
+        require("lspconfig").ruff.setup({
+            init_options = {
+                settings = {
+                    args = {},
+                }
+            }
+        })
 
         require("lspconfig").svelte.setup({})
 
@@ -634,8 +642,7 @@ require("lazy").setup({
     "rcarriga/nvim-dap-ui",
   },
   config = function()
-      require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
-      
+      require("dap-python").setup("/home/gretar/.virtualenvs/debugpy/bin/python")
       local dap = require("dap")
       table.insert(dap.configurations.python, {
           type = "python",
@@ -880,4 +887,24 @@ opts = {
         })
     end,
 },
+-- Nvim-ufo
+{
+  "kevinhwang91/nvim-ufo",
+  dependencies = { "kevinhwang91/promise-async" },
+  config = function()
+    vim.o.foldcolumn = "1"
+    vim.o.foldlevel = 99
+    vim.o.foldlevelstart = 99
+    vim.o.foldenable = true
+    vim.opt.foldtext = ""
+
+    -- Use Treesitter first; fallback to indent
+    require("ufo").setup({
+      provider_selector = function(bufnr, filetype, buftype)
+        return { "treesitter", "indent" }
+      end,
+    })
+  end
+},
+
 })
