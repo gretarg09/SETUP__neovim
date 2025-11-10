@@ -134,6 +134,7 @@ function _find_image_at_cursor(line, cursor_col )
             local match_start, match_end, captured = string.find(line, pattern, start_pos)
             if match_start then
                 -- Check if cursor is within this image link
+                print(string.format("cursor_col: %d, match_start: %d, match_end: %d, captured: %s", cursor_col, match_start, match_end, captured or "nil"))
                 if cursor_col >= match_start - 1 and cursor_col <= match_end then
                     if captured then
                         image_path = captured

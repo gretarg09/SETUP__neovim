@@ -642,7 +642,7 @@ require("lazy").setup({
     "rcarriga/nvim-dap-ui",
   },
   config = function()
-      require("dap-python").setup("/home/gretar/.virtualenvs/debugpy/bin/python")
+      require("dap-python").setup("/home/kuri/.virtualenvs/debugpy/bin/python")
       local dap = require("dap")
       table.insert(dap.configurations.python, {
           type = "python",

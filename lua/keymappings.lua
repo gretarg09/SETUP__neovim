@@ -165,30 +165,5 @@ keymap("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debu
 -- IMG CLIP
 keymap("n", "<leader>p", "<cmd>PasteImage<cr>", { desc = "Paste image from system clipboard" })
 
-keymap('n', '<CR>', function()
-      -- Check if this is a special buffer (non-normal buftype)
-      local buftype = vim.bo.buftype
-      if buftype ~= '' then
-          -- For special buffers, use default Enter behavior
-          vim.cmd('normal! ')
-          return
-      end
-
-      local line = vim.api.nvim_get_current_line()
-      local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
-
-      -- Check if there's an image on this line
-      local image_path = require('special_functions')._find_image_at_cursor(line, cursor_col)
-
-      if image_path then
-          -- Open the image
-          print('image path found: ' .. image_path)
-          require('special_functions').OpenImageWithSwayimg()
-      else
-          -- Toggle fold
-          print('no image path')
-          vim.cmd('normal! za')
-      end
-  end, { desc = 'Smart Enter: Open and close folds if no image path is found, if image path is found then open image. ' })
 
 

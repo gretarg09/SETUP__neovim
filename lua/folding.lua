@@ -1,6 +1,8 @@
 print('Setting up folding')
 -- Remember to install parsers : :TSInstall markdown markdown_inline
 
+local keymap = vim.keymap.set -- Shorten function name
+
 -- I am using nvim-ufo for a better folding experience, see plugins.lua for more folding settings.
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -15,12 +17,27 @@ vim.keymap.set('n', 'zp', function()
   if not winid then vim.cmd('normal! za') end
 end)
 
--- Create a ENTER super key for folding.
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "*",
   callback = function()
     if vim.bo.filetype ~= "qf" and vim.bo.buftype == "" then
-      vim.keymap.set("n", "<CR>", "za", { buffer = true, noremap = true, silent = true })
+        keymap('n', '<CR>', function()
+              local line = vim.api.nvim_get_current_line()
+              local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
+
+              -- Check if there's an image on this line
+              local image_path = require('special_functions')._find_image_at_cursor(line, cursor_col)
+
+              if image_path then
+                  -- Open the image
+                  print('image path found: ' .. image_path)
+                  require('special_functions').OpenImageWithSwayimg()
+              else
+                  -- Toggle fold
+                  print('no image path')
+                  vim.cmd('normal! za')
+              end
+          end, { buffer = true, noremap = true, silent = true, desc = 'Smart Enter: Open image or toggle fold' })
     end
   end
 })
