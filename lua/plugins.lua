@@ -882,5 +882,17 @@ require("lazy").setup({
     })
   end
 },
-
+-- MAXIMIZE
+{
+    'declancm/maximize.nvim',
+    config = function()
+        require('maximize').setup({
+            plugins = {
+                aerial = { enable = true }, -- enable aerial.nvim integration
+                dapui = { enable = true },  -- enable nvim-dap-ui integration
+                tree = { enable = true },   -- enable nvim-tree.lua integration
+            }
+        })
+    end
+}
 })
