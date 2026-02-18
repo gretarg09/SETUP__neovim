@@ -600,6 +600,30 @@ require("lazy").setup({
         dap.listeners.before.launch.dapui_config = function()
           dapui.open()
         end
+        dap.listeners.before.event_terminated.dapui_config = function()
+          dapui.close()
+        end
+        dap.listeners.before.event_exited.dapui_config = function()
+          dapui.close()
+        end
+
+        -- Fix "Terminal already connected to buffer N" error on second debug session.
+        -- nvim-dap pools terminal buffers for reuse, but nvim_open_term can't be
+        -- called twice on the same buffer. Deleting them forces fresh buffers next time.
+        local function close_dap_terminals()
+          vim.schedule(function()
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+              if vim.api.nvim_buf_is_valid(buf) then
+                local name = vim.api.nvim_buf_get_name(buf)
+                if name:match('%[dap%-terminal%]') then
+                  pcall(vim.api.nvim_buf_delete, buf, { force = true })
+                end
+              end
+            end
+          end)
+        end
+        dap.listeners.after.event_terminated.close_dap_terminals = close_dap_terminals
+        dap.listeners.after.event_exited.close_dap_terminals = close_dap_terminals
 
         -- VISIDATA
         dap.defaults.fallback.external_terminal = { -- GAG: Needed for the visidata logic to work.

@@ -197,9 +197,19 @@ function _open_image(image_path)
 end
 
 
+function InsertDateHeading()
+    local date = os.date("%Y-%m-%d")
+    local heading = "## " .. date
+    local row = vim.api.nvim_win_get_cursor(0)[1]
+    vim.api.nvim_buf_set_lines(0, row - 1, row - 1, false, { heading })
+end
+
+vim.api.nvim_create_user_command('Date', InsertDateHeading, {})
+
 m.ToggleCheckbox = ToggleCheckbox
 m.OpenGithub = OpenGithub
 m.OpenImageWithSwayimg = OpenImageWithSwayimg
 m._find_image_at_cursor = _find_image_at_cursor
+m.InsertDateHeading = InsertDateHeading
 
 return m
