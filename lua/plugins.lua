@@ -162,7 +162,7 @@ require("lazy").setup({
     -- MASON LSP CONFIG
     {
         "williamboman/mason-lspconfig.nvim",
-        dependencies = { "williamboman/mason.nvim" }, -- make sure that mason.nvim is setup before mason-lspconfig
+        dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" }, -- nvim-lspconfig must be on rtp before vim.lsp.enable() is called
         config = function()
             require("mason-lspconfig").setup({
                 ensure_installed = {
