@@ -74,6 +74,7 @@ require("lazy").setup({
                 "markdown_inline",
                 "latex",
                 "bibtex",
+                "typst",
                 "svelte",
                 "javascript",
                 "typescript",
@@ -165,7 +166,18 @@ require("lazy").setup({
     dependencies = {"williamboman/mason.nvim"}, -- make sure that mason.nvim is setup before mason-lspconfig
     config = function()
         require("mason-lspconfig").setup({
-            -- ensure_installed = { "lua_ls", "pyright", "ruff" },
+            ensure_installed = {
+                "lua_ls",
+                "pyright",
+                "ruff",
+                "svelte",
+                "tinymist",
+                "cssls",
+                "html",
+                "jsonls",
+                "eslint",
+                "tailwindcss",
+            },
             automatic_installation = false,
         })
 
@@ -213,6 +225,29 @@ require("lazy").setup({
         })
 
         require("lspconfig").svelte.setup({})
+
+        require("lspconfig").cssls.setup({})
+
+        require("lspconfig").html.setup({})
+
+        require("lspconfig").jsonls.setup({})
+
+        require("lspconfig").eslint.setup({
+            on_attach = function(_, bufnr)
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                    buffer = bufnr,
+                    command = "EslintFixAll",
+                })
+            end,
+        })
+
+        require("lspconfig").tailwindcss.setup({})
+
+        require("lspconfig").tinymist.setup({
+            settings = {
+                exportPdf = "onSave",
+            }
+        })
 
         -- Set up LspAttach autocmd for keybindings
         vim.api.nvim_create_autocmd('LspAttach', {
@@ -561,6 +596,13 @@ require("lazy").setup({
         },
     },
 },
+-- TYPST PREVIEW
+{
+    'chomosuke/typst-preview.nvim',
+    ft = 'typst',
+    version = '1.*',
+    build = function() require('typst-preview').update() end,
+},
 -- VIMTEX
 {
     "lervag/vimtex",
@@ -651,6 +693,36 @@ require("lazy").setup({
             )
         end
 
+        -- JAVASCRIPT / SVELTEKIT SERVER-SIDE DEBUGGING
+        local ok, mason_registry = pcall(require, "mason-registry")
+        if ok and mason_registry.is_installed("js-debug-adapter") then
+            local js_debug_path = mason_registry.get_package("js-debug-adapter"):get_install_path()
+
+            dap.adapters["pwa-node"] = {
+                type = "server",
+                host = "localhost",
+                port = "${port}",
+                executable = {
+                    command = "node",
+                    args = { js_debug_path .. "/js-debug/src/dapDebugServer.js", "${port}" },
+                },
+            }
+
+            dap.configurations.javascript = {
+                {
+                    type = "pwa-node",
+                    request = "launch",
+                    name = "Launch SvelteKit (Vite)",
+                    runtimeExecutable = "pnpm",
+                    runtimeArgs = { "dev" },
+                    rootPath = "${workspaceFolder}",
+                    cwd = "${workspaceFolder}",
+                    sourceMaps = true,
+                    skipFiles = { "<node_internals>/**" },
+                },
+            }
+        end
+
     end
 },
 -- NVIM DAP UI
@@ -700,28 +772,99 @@ require("lazy").setup({
 -- RUSTACEANVIM
 {
     'mrcjkb/rustaceanvim',
-    version = '^5', -- Recommended
+    version = '^6', -- Recommended
     lazy = false, -- This plugin is already lazy
-    config = function()
-        -- This part of the code is taken from the following video: https://www.youtube.com/watch?v=E2mKJ73M9pg
-        local mason_registry = require('mason-registry')
-        local codelldb = mason_registry.get_package("codelldb")
+    init = function()
+        vim.g.rustaceanvim = function()
+            local adapter
+            local ok, mason_registry = pcall(require, "mason-registry")
 
-        local extension_path = codelldb:get_install_path() .. "/extension/"
-        print('the extension path registry')
-        print(extension_path)
+            if ok then
+                local has_codelldb, codelldb = pcall(mason_registry.get_package, "codelldb")
 
-        local codelldb_path = extension_path .. "adapter/codelldb"
-        local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
+                if has_codelldb and codelldb:is_installed() then
+                    local extension_path = codelldb:get_install_path() .. "/extension/"
+                    local codelldb_path = extension_path .. "adapter/codelldb"
+                    local liblldb_path = extension_path .. "lldb/lib/liblldb"
+                    local sysname = vim.uv.os_uname().sysname
 
-        local cfg = require('rustaceanvim.config')
+                    if sysname:find("Windows") then
+                        codelldb_path = extension_path .. "adapter\\codelldb.exe"
+                        liblldb_path = extension_path .. "lldb\\bin\\liblldb.dll"
+                    else
+                        liblldb_path = liblldb_path .. (sysname == "Linux" and ".so" or ".dylib")
+                    end
 
-        vim.g.rustaceanvim = {
-            dap = {
-                adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
-            },
-        }
-    end
+                    if vim.fn.executable(codelldb_path) == 1 and vim.uv.fs_stat(liblldb_path) then
+                        local cfg = require("rustaceanvim.config")
+                        adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path)
+                    end
+                end
+            end
+
+            return {
+                dap = adapter and {
+                    adapter = adapter,
+                } or {},
+                server = {
+                    on_attach = function(client, bufnr)
+                        local nmap = function(keys, func, description)
+                            vim.keymap.set("n", keys, func, {
+                                buffer = bufnr,
+                                silent = true,
+                                desc = description,
+                            })
+                        end
+
+                        nmap("<leader>rr", function()
+                            vim.cmd.RustLsp({ "runnables" })
+                        end, "Rust runnables")
+
+                        nmap("<leader>rt", function()
+                            vim.cmd.RustLsp({ "testables" })
+                        end, "Rust testables")
+
+                        nmap("<leader>rd", function()
+                            vim.cmd.RustLsp({ "debuggables" })
+                        end, "Rust debuggables")
+
+                        nmap("<leader>re", function()
+                            vim.cmd.RustLsp({ "explainError", "current" })
+                        end, "Rust explain error")
+
+                        nmap("<leader>rD", function()
+                            vim.cmd.RustLsp({ "openDocs" })
+                        end, "Rust open docs.rs")
+
+                        nmap("<leader>rm", function()
+                            vim.cmd.RustLsp({ "expandMacro" })
+                        end, "Rust expand macro")
+
+                        if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+                            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                        end
+                    end,
+                    default_settings = {
+                        ["rust-analyzer"] = {
+                            cargo = {
+                                allFeatures = true,
+                                buildScripts = {
+                                    enable = true,
+                                },
+                            },
+                            check = {
+                                command = "clippy",
+                                extraArgs = { "--no-deps" },
+                            },
+                            procMacro = {
+                                enable = true,
+                            },
+                        },
+                    },
+                },
+            }
+        end
+    end,
 },
 -- RENDER MARKDOWN 
 {
@@ -907,6 +1050,37 @@ opts = {
                 accept_suggestion = "<C-f>",
                 clear_suggestion = "<C-]>",
                 accept_word = "<C-j>",
+            },
+        })
+    end,
+},
+-- MASON TOOL INSTALLER (non-LSP tools: prettier)
+{
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    config = function()
+        require("mason-tool-installer").setup({
+            ensure_installed = {
+                "prettier",
+            },
+        })
+    end,
+},
+-- CONFORM (formatting)
+{
+    "stevearc/conform.nvim",
+    config = function()
+        require("conform").setup({
+            formatters_by_ft = {
+                svelte     = { "prettier" },
+                javascript = { "prettier" },
+                css        = { "prettier" },
+                html       = { "prettier" },
+                json       = { "prettier" },
+            },
+            format_on_save = {
+                timeout_ms = 2000,
+                lsp_fallback = true,
             },
         })
     end,

@@ -53,6 +53,36 @@ I followed [this article]() to setup luasnip and to learn how to use it.
 [Add the script from this thread](https://stackoverflow.com/questions/72412720/how-to-source-init-lua-without-restarting-neovim)
 
 
+## Rust setup
+
+Core tools:
+
+* `rustup component add rustfmt clippy rust-src`
+* `:MasonInstall rust-analyzer codelldb`
+
+Neovim Rust stack:
+
+* `rustaceanvim` for Rust-specific `rust-analyzer` features
+* `nvim-dap` + `codelldb` for debugging
+* `nvim-treesitter` for highlighting, textobjects, and folding
+
+Current Rust defaults in this config:
+
+* `cargo clippy` runs on save through `rust-analyzer`
+* proc macros are enabled
+* all cargo features are enabled for analysis
+* inlay hints are enabled when the server supports them
+
+Rust keymaps:
+
+* `<leader>rr` for runnables
+* `<leader>rt` for testables
+* `<leader>rd` for debuggables
+* `<leader>re` for explaining the current Rust error
+* `<leader>rD` for opening docs.rs
+* `<leader>rm` for macro expansion
+
+
 # Notes
 
 * **[01-08-2024]**:  The plugin nullls will not be maintained anymore. I will take it out. There where only two keybindings that i was using there. 
@@ -62,7 +92,6 @@ vim.cmd('map <Leader>lf :lua vim.lsp.buf.formatting_sync(nil, 10000)<CR>')
 vim.cmd('map <Leader>lF :lua vim.lsp.buf.range_formatting()<CR>')
 ```
 It would be interesting to investigate these functions further to see if they can be used.
-
 
 
 
