@@ -165,5 +165,10 @@ keymap("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debu
 -- IMG CLIP
 keymap("n", "<leader>p", "<cmd>PasteImage<cr>", { desc = "Paste image from system clipboard" })
 
+-- AGENT INTEGRATION
+keymap("v", "<leader>as", function()
+  require("agent_integration").send_selection_to_agent()
+end, { desc = "Send visual selection to tmux agent pane" })
+
 
 
