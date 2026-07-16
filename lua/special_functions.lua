@@ -9,7 +9,7 @@ function ToggleCheckbox()
     print(line)
     print(cursor)
 
-      -- Match `[x]` or `[-]` and toggle between them
+    -- Match `[x]` or `[-]` and toggle between them
     if line:match("%[x%]") then
         line = line:gsub("%[x%]", "[-]", 1)
     elseif line:match("%[%-]") then
@@ -39,17 +39,17 @@ function OpenGithub()
         :gsub("git@github.com:", "https://github.com/")
         :gsub("%.git$", "")
 
-     local url = string.format("%s/blob/%s/%s#L%d", remote_url, branch, relative_file_path, line)
+    local url = string.format("%s/blob/%s/%s#L%d", remote_url, branch, relative_file_path, line)
 
-     vim.fn.jobstart({ "xdg-open", url }, { detach = true })
+    vim.fn.jobstart({ "xdg-open", url }, { detach = true })
 end
 
 function _get_current_branch()
-     local handle_branch = io.popen("git rev-parse --abbrev-ref HEAD")
-     local branch = handle_branch:read("*a"):gsub("\n", "")
-     handle_branch:close()
+    local handle_branch = io.popen("git rev-parse --abbrev-ref HEAD")
+    local branch = handle_branch:read("*a"):gsub("\n", "")
+    handle_branch:close()
 
-     return branch
+    return branch
 end
 
 function _fetch_remote_url()
@@ -79,9 +79,7 @@ function _fetch_git_root()
     return git_root
 end
 
-
 function OpenImageWithSwayimg()
-
     -- Detects image links under the cursor and opens them with swayimg. The function supports:
     -- Markdown image syntax: ![alt](path)
     -- Direct image file paths_ image.pnd, path/to/image.png, etc.
@@ -89,7 +87,8 @@ function OpenImageWithSwayimg()
     -- Relative and absolute paths
 
     local line = vim.api.nvim_get_current_line()
-    local cursor_col = vim.api.nvim_win_get_cursor(0)[2] -- nvim_win_get_cursor returns a table with the cursor position: 1 for line and 2 for column
+    local cursor_col = vim.api.nvim_win_get_cursor(0)
+        [2] -- nvim_win_get_cursor returns a table with the cursor position: 1 for line and 2 for column
     local image_path = _find_image_at_cursor(line, cursor_col)
 
     if not image_path then
@@ -107,19 +106,18 @@ function OpenImageWithSwayimg()
     _open_image(image_path)
 end
 
-function _find_image_at_cursor(line, cursor_col )
-
+function _find_image_at_cursor(line, cursor_col)
     -- Pattern to match image links: ![alt](path) or just image file paths
     local image_patterns = {
-        "!%[.-%]%((.-)%)",  -- Markdown image syntax ![alt](path)
-        "(%S+%.png)",       -- .png files
-        "(%S+%.jpg)",       -- .jpg files
-        "(%S+%.jpeg)",      -- .jpeg files
-        "(%S+%.gif)",       -- .gif files
-        "(%S+%.webp)",      -- .webp files
-        "(%S+%.bmp)",       -- .bmp files
-        "(%S+%.tiff)",      -- .tiff files
-        "(%S+%.svg)"        -- .svg files
+        "!%[.-%]%((.-)%)", -- Markdown image syntax ![alt](path)
+        "(%S+%.png)",      -- .png files
+        "(%S+%.jpg)",      -- .jpg files
+        "(%S+%.jpeg)",     -- .jpeg files
+        "(%S+%.gif)",      -- .gif files
+        "(%S+%.webp)",     -- .webp files
+        "(%S+%.bmp)",      -- .bmp files
+        "(%S+%.tiff)",     -- .tiff files
+        "(%S+%.svg)"       -- .svg files
     }
 
     -- Find the first image link on the right of the cursor OR under the cursor (and to the right).
@@ -134,22 +132,25 @@ function _find_image_at_cursor(line, cursor_col )
             local match_start, match_end, captured = string.find(line, pattern, start_pos)
             if match_start then
                 -- Check if cursor is within this image link
-                print(string.format("cursor_col: %d, match_start: %d, match_end: %d, captured: %s", cursor_col, match_start, match_end, captured or "nil"))
+                print(string.format("cursor_col: %d, match_start: %d, match_end: %d, captured: %s", cursor_col,
+                    match_start, match_end, captured or "nil"))
                 if cursor_col >= match_start - 1 and cursor_col <= match_end then
                     if captured then
                         image_path = captured
                         break
                     else
-                        print('Error: No captured text found, each statement should have a captured group so this should never happen')
+                        print(
+                            'Error: No captured text found, each statement should have a captured group so this should never happen')
                     end
 
-                -- Check if this is the closest image link to the right of cursor
+                    -- Check if this is the closest image link to the right of cursor
                 elseif match_start > cursor_col and (not closest_match_start or match_start < closest_match_start) then
                     closest_match_start = match_start
                     if captured then
                         closest_image_path = captured
                     else
-                        print('Error: No captured text found, each statement should have a captured group so this should never happen')
+                        print(
+                            'Error: No captured text found, each statement should have a captured group so this should never happen')
                     end
                 end
                 start_pos = match_end + 1
@@ -181,7 +182,6 @@ function _check_if_file_exists(file_path)
     return true
 end
 
-
 function _handle_relative_paths(image_path)
     if not string.match(image_path, "^/") and not string.match(image_path, "^https?://") then
         local current_file_dir = vim.fn.expand("%:p:h")
@@ -196,7 +196,6 @@ function _open_image(image_path)
     return true
 end
 
-
 function InsertDateHeading()
     local date = os.date("%Y-%m-%d")
     local heading = "## " .. date
@@ -205,6 +204,43 @@ function InsertDateHeading()
 end
 
 vim.api.nvim_create_user_command('Date', InsertDateHeading, {})
+
+
+function OpenWeeklyNote()
+    -- Opens this week's daily index note in a floating window.
+    -- Path mirrors py__daily_creation.py: calendar year + zero-padded ISO week.
+    local name = string.format("daily--%s-week-%s", os.date("%Y"), os.date("%V"))
+    local path = string.format(
+        "/home/kuri/Dropbox/kuris_second_brain/0__Inbox/%s/index__%s.md",
+        name, name
+    )
+
+    if vim.fn.filereadable(path) == 0 then
+        vim.notify("Weekly note not found: " .. path, vim.log.levels.WARN)
+        return
+    end
+
+    local width = math.floor(vim.o.columns * 0.95)
+    local height = math.floor(vim.o.lines * 0.95)
+
+    local buf = vim.fn.bufadd(path)
+    vim.fn.bufload(buf)
+
+    vim.api.nvim_open_win(buf, true, {
+        relative = "editor",
+        width = width,
+        height = height,
+        col = math.floor((vim.o.columns - width) / 2),
+        row = math.floor((vim.o.lines - height) / 2),
+        style = "minimal",
+        border = "rounded",
+        title = " " .. name .. " ",
+        title_pos = "center",
+    })
+end
+
+vim.api.nvim_create_user_command('Note', OpenWeeklyNote, {})
+vim.cmd("cnoreabbrev note Note")
 
 m.ToggleCheckbox = ToggleCheckbox
 m.OpenGithub = OpenGithub

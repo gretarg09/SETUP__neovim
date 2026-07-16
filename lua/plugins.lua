@@ -79,6 +79,7 @@ require("lazy").setup({
                     "typescript",
                     "html",
                     "css",
+                    "r",
                 },
                 sync_install = false,
                 auto_install = true, -- auto install relevant parser while opening a file if parser is not found.
@@ -176,6 +177,10 @@ require("lazy").setup({
                     "jsonls",
                     "eslint",
                     "tailwindcss",
+                    -- NOTE: r_language_server is NOT installed via Mason (it compiles
+                    -- the R {languageserver} package, which is flaky). Install it in R
+                    -- directly with install.packages("languageserver"); it is enabled
+                    -- below and lspconfig launches it against the system R.
                 },
                 automatic_installation = false,
             })
@@ -241,6 +246,7 @@ require("lazy").setup({
                 "jsonls",
                 "eslint",
                 "tailwindcss",
+                "r_language_server",
             })
 
             -- Set up LspAttach autocmd for keybindings
@@ -1079,6 +1085,14 @@ require("lazy").setup({
                     css        = { "prettier" },
                     html       = { "prettier" },
                     json       = { "prettier" },
+                    r          = { "air" },
+                    rmd        = { "air" },
+                },
+                formatters = {
+                    -- The AUR package `r-air-bin` installs the binary as `r-air`
+                    -- (renamed to avoid a clash with an unrelated `air` package),
+                    -- so override conform's default `air` command.
+                    air = { command = "r-air" },
                 },
                 format_on_save = {
                     timeout_ms = 2000,
