@@ -137,7 +137,15 @@ keymap("n", "<C-n>", ":NvimTreeToggle<CR>", opts)
 keymap("n", "<Leader>dn", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" }) -- debug next
 keymap("n", "<Leader>dj", "<cmd>lua require'dap'.step_over()<CR>", { desc = "Debugger step over" })
 keymap("n", "<Leader>dk", "<cmd>lua require'dap'.step_out()<CR>", { desc = "Debugger step out" })
-keymap("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debugger continue" })
+vim.keymap.set("n", "<Leader>dc", function()
+    -- Snapshot the project root from the buffer being debugged *before* dap's
+    -- config picker (vim.ui.select) potentially steals focus into another buffer —
+    -- config functions like JS/TS's project_root() read this instead of
+    -- resolving `vim.fs.root(0, ...)` against whatever buffer happens to be
+    -- current once the picker is done.
+    vim.g.dap_project_root = vim.fs.root(0, "package.json") or vim.fn.getcwd()
+    require("dap").continue()
+end, { desc = "Debugger continue" })
 keymap("n", "<leader>dt",":lua require('dap-python').test_method()<CR>", { desc = "Debugger continue" })
 
 keymap("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })

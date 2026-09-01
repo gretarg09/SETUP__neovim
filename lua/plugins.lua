@@ -171,6 +171,7 @@ require("lazy").setup({
                     "pyright",
                     "ruff",
                     "svelte",
+                    "ts_ls",
                     "tinymist",
                     "cssls",
                     "html",
@@ -240,6 +241,7 @@ require("lazy").setup({
                 "pyright",
                 "ruff",
                 "svelte",
+                "ts_ls",
                 "tinymist",
                 "cssls",
                 "html",
@@ -575,37 +577,6 @@ require("lazy").setup({
             }
         end
     },
-    -- AVANTE
-    {
-        "yetone/avante.nvim",
-        event = "VeryLazy",
-        lazy = false,
-        version = false, -- set this if you want to always pull the latest change
-        opts = {
-            -- add any opts here
-        },
-        -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-        build = "make",
-        -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-        dependencies = {
-            "stevearc/dressing.nvim",
-            "nvim-lua/plenary.nvim",
-            "MunifTanjim/nui.nvim",
-            --- The below dependencies are optional,
-            "hrsh7th/nvim-cmp",            -- autocompletion for avante commands and mentions
-            "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-            -- "HakonHarnes/img-clip.nvim", -- [GAG]: I am already installing this plugin
-            -- "zbirenbaum/copilot.lua", -- for providers='copilot'
-            {
-                -- Make sure to set this up properly if you have lazy=true
-                'MeanderingProgrammer/render-markdown.nvim',
-                opts = {
-                    file_types = { "markdown", "Avante" },
-                },
-                ft = { "markdown", "Avante" },
-            },
-        },
-    },
     -- TYPST PREVIEW
     {
         'chomosuke/typst-preview.nvim',
@@ -719,27 +690,73 @@ require("lazy").setup({
 
                 dap.adapters["pwa-node"] = {
                     type = "server",
-                    host = "localhost",
+                    host = "127.0.0.1",
                     port = "${port}",
                     executable = {
                         command = "node",
-                        args = { js_debug_path .. "/js-debug/src/dapDebugServer.js", "${port}" },
+                        args = {
+                            js_debug_path .. "/js-debug/src/dapDebugServer.js",
+                            "${port}",
+                            "127.0.0.1",
+                        },
                     },
                 }
+
+                -- Root off the nearest package.json so SvelteKit apps nested in a repo work.
+                local function project_root()
+                    return vim.fs.root(0, "package.json") or vim.g.dap_project_root or vim.fn.getcwd()
+                end
+
+                local function pick_sveltekit_inspector_process()
+                    local lines = vim.fn.systemlist({ "ps", "-eo", "pid=,args=" })
+                    local matches = vim.tbl_filter(function(line)
+                        return line:match("node%s+%-%-inspect") ~= nil and line:match("vite") ~= nil
+                    end, lines)
+
+                    if #matches == 0 then
+                        vim.notify("No `node --inspect ... vite` process found", vim.log.levels.WARN)
+                        return nil
+                    end
+
+                    if #matches == 1 then
+                        return matches[1]:match("^%s*(%d+)")
+                    end
+
+                    return coroutine.create(function(coro)
+                        vim.ui.select(matches, {
+                            prompt = "Select SvelteKit inspector process",
+                            format_item = function(item)
+                                return item:gsub("^%s+", "")
+                            end,
+                        }, function(choice)
+                            coroutine.resume(coro, choice and choice:match("^%s*(%d+)") or nil)
+                        end)
+                    end)
+                end
 
                 dap.configurations.javascript = {
                     {
                         type = "pwa-node",
-                        request = "launch",
-                        name = "Launch SvelteKit (Vite)",
-                        runtimeExecutable = "pnpm",
-                        runtimeArgs = { "dev" },
-                        rootPath = "${workspaceFolder}",
-                        cwd = "${workspaceFolder}",
+                        request = "attach",
+                        name = "Attach to SvelteKit inspector process",
+                        processId = pick_sveltekit_inspector_process,
+                        rootPath = project_root,
+                        cwd = project_root,
                         sourceMaps = true,
+                        resolveSourceMapLocations = function()
+                            return { project_root() .. "/**", "!**/node_modules/**" }
+                        end,
                         skipFiles = { "<node_internals>/**" },
-                    },
+                    }
                 }
+
+                -- SvelteKit server code lives in .ts files (+page.server.ts, src/lib/server/*.ts)
+                -- and .svelte files (SSR'd via Vite) — filetype is "typescript"/"svelte", not
+                -- "javascript", so nvim-dap needs the same configs registered under those keys too.
+                -- Deep-copied so per-project launch.json configs (dap.ext.vscode.load_launchjs)
+                -- can't accumulate duplicate entries across the shared table.
+                dap.configurations.typescript = vim.deepcopy(dap.configurations.javascript)
+                dap.configurations.svelte = vim.deepcopy(dap.configurations.javascript)
             end
         end
     },
@@ -976,6 +993,15 @@ require("lazy").setup({
                     floating_windows = false,
                     filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
                 },
+                typst = {
+                    enabled = true,
+                    clear_in_insert_mode = false,
+                    download_remote_images = true,
+                    only_render_image_at_cursor = true,
+                    only_render_image_at_cursor_mode = "popup",
+                    floating_windows = false,
+                    filetypes = { "typst" },
+                },
             },
             max_width = nil,
             max_height = nil,
@@ -1070,6 +1096,7 @@ require("lazy").setup({
             require("mason-tool-installer").setup({
                 ensure_installed = {
                     "prettier",
+                    "js-debug-adapter",
                 },
             })
         end,
