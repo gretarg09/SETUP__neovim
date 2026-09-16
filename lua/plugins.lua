@@ -52,101 +52,96 @@ require("lazy").setup({
     -- NVIM TREESITTER
     {
         "nvim-treesitter/nvim-treesitter",
+        branch = "main",
+        lazy = false,
         build = ":TSUpdate",
-
         config = function()
-            local configs = require("nvim-treesitter.configs")
-            configs.setup({
-                ensure_installed = { -- auto install relevant parser while opening a file if parser is not found.
-                    "c",
-                    "lua",
-                    "vim",
-                    "vimdoc",
-                    "query",
-                    "elixir",
-                    "heex",
-                    "javascript",
-                    "html",
-                    "rust",
-                    "python",
-                    "markdown",
-                    "markdown_inline",
-                    "latex",
-                    "bibtex",
-                    "typst",
-                    "svelte",
-                    "javascript",
-                    "typescript",
-                    "html",
-                    "css",
-                    "r",
-                },
-                sync_install = false,
-                auto_install = true, -- auto install relevant parser while opening a file if parser is not found.
-                highlight = { enable = true },
-                indent = { enable = true },
+            require("nvim-treesitter").setup({})
 
-                -- Incremental selection
-                incremental_selection = {
-                    enable = true,
-                    keymaps = {
-                        init_selection = "gis",    -- Start selection.
-                        node_incremental = "gni",  -- Selection increment.
-                        scope_incremental = "gsi", -- Selection scope.
-                        node_decremental = "gnd",  -- Selection decrement.
-                    },
-                },
-                textobjects = {
-                    select = {
-                        enable = true,
-                        lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-                        keymaps = {
-                            -- You can use the capture groups defined in textobjects.scm
-                            ['aa'] = '@parameter.outer',
-                            ['ia'] = '@parameter.inner',
-                            ['af'] = '@function.outer',
-                            ['if'] = '@function.inner',
-                            ['ac'] = '@class.outer',
-                            ['ic'] = '@class.inner',
-                        },
-                    },
-                    move = {
-                        enable = true,
-                        set_jumps = true, -- whether to set jumps in the jumplist
-                        goto_next_start = {
-                            [']m'] = '@function.outer',
-                            [']]'] = '@class.outer',
-                        },
-                        goto_next_end = {
-                            [']M'] = '@function.outer',
-                            [']['] = '@class.outer',
-                        },
-                        goto_previous_start = {
-                            ['[m'] = '@function.outer',
-                            ['[['] = '@class.outer',
-                        },
-                        goto_previous_end = {
-                            ['[M'] = '@function.outer',
-                            ['[]'] = '@class.outer',
-                        },
-                    },
-                    swap = {
-                        enable = true,
-                        swap_next = {
-                            ['<leader>s'] = '@parameter.inner',
-                        },
-                        swap_previous = {
-                            ['<leader>S'] = '@parameter.inner',
-                        },
-                    },
-                }
+            local ensure_installed = {
+                "c",
+                "lua",
+                "vim",
+                "vimdoc",
+                "query",
+                "elixir",
+                "heex",
+                "javascript",
+                "html",
+                "rust",
+                "python",
+                "markdown",
+                "markdown_inline",
+                "latex",
+                "bibtex",
+                "typst",
+                "svelte",
+                "typescript",
+                "css",
+                "r",
+            }
+            local installed = require("nvim-treesitter.config").get_installed()
+            local to_install = vim.iter(ensure_installed)
+                :filter(function(parser) return not vim.tbl_contains(installed, parser) end)
+                :totable()
+            if #to_install > 0 then
+                require("nvim-treesitter").install(to_install)
+            end
+
+            -- Highlighting and indent, replacing the old highlight/indent = { enable = true }
+            vim.api.nvim_create_autocmd("FileType", {
+                callback = function(args)
+                    local ok = pcall(vim.treesitter.start, args.buf)
+                    if ok then
+                        vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                    end
+                end,
             })
         end
-
     },
     -- NVIM TREESITTER TEXTOBJECTS
     {
-        "nvim-treesitter/nvim-treesitter-textobjects"
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "main",
+        init = function()
+            vim.g.no_plugin_maps = true
+        end,
+        config = function()
+            require("nvim-treesitter-textobjects").setup({
+                select = { lookahead = true },
+                move = { set_jumps = true },
+            })
+
+            local select = require("nvim-treesitter-textobjects.select")
+            local move = require("nvim-treesitter-textobjects.move")
+            local swap = require("nvim-treesitter-textobjects.swap")
+
+            local select_keymaps = {
+                aa = "@parameter.outer",
+                ia = "@parameter.inner",
+                af = "@function.outer",
+                ["if"] = "@function.inner",
+                ac = "@class.outer",
+                ic = "@class.inner",
+            }
+            for lhs, query in pairs(select_keymaps) do
+                vim.keymap.set({ "x", "o" }, lhs, function()
+                    select.select_textobject(query, "textobjects")
+                end)
+            end
+
+            vim.keymap.set({ "n", "x", "o" }, "]m", function() move.goto_next_start("@function.outer", "textobjects") end)
+            vim.keymap.set({ "n", "x", "o" }, "]]", function() move.goto_next_start("@class.outer", "textobjects") end)
+            vim.keymap.set({ "n", "x", "o" }, "]M", function() move.goto_next_end("@function.outer", "textobjects") end)
+            vim.keymap.set({ "n", "x", "o" }, "][", function() move.goto_next_end("@class.outer", "textobjects") end)
+            vim.keymap.set({ "n", "x", "o" }, "[m", function() move.goto_previous_start("@function.outer", "textobjects") end)
+            vim.keymap.set({ "n", "x", "o" }, "[[", function() move.goto_previous_start("@class.outer", "textobjects") end)
+            vim.keymap.set({ "n", "x", "o" }, "[M", function() move.goto_previous_end("@function.outer", "textobjects") end)
+            vim.keymap.set({ "n", "x", "o" }, "[]", function() move.goto_previous_end("@class.outer", "textobjects") end)
+
+            vim.keymap.set("n", "<leader>s", function() swap.swap_next("@parameter.inner") end)
+            vim.keymap.set("n", "<leader>S", function() swap.swap_previous("@parameter.inner") end)
+        end
     },
     -- NVIM LSP CONFIG
     {
@@ -971,16 +966,7 @@ require("lazy").setup({
         "3rd/image.nvim",
         event = "VeryLazy",
         dependencies = {
-            {
-                "nvim-treesitter/nvim-treesitter",
-                build = ":TSUpdate",
-                config = function()
-                    require("nvim-treesitter.configs").setup({
-                        ensure_installed = { "markdown" },
-                        highlight = { enable = true },
-                    })
-                end,
-            },
+            "nvim-treesitter/nvim-treesitter",
         },
         opts = {
             backend = "kitty",
