@@ -7,10 +7,14 @@ local function smart_enter()
     local line = vim.api.nvim_get_current_line()
     local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
 
+    -- Check for a video first, since the markdown image pattern would also match ![alt](video.mp4)
+    local video_path = require('special_functions')._find_video_at_cursor(line, cursor_col)
     -- Check if there's an image on this line
     local image_path = require('special_functions')._find_image_at_cursor(line, cursor_col)
 
-    if image_path then
+    if video_path then
+        require('special_functions').OpenVideoWithMpv()
+    elseif image_path then
         -- Open the image
         print('image path found: ' .. image_path)
         require('special_functions').OpenImageWithSwayimg()

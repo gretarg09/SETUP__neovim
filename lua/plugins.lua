@@ -72,7 +72,6 @@ require("lazy").setup({
                 "python",
                 "markdown",
                 "markdown_inline",
-                "latex",
                 "bibtex",
                 "typst",
                 "svelte",
@@ -80,9 +79,13 @@ require("lazy").setup({
                 "css",
                 "r",
             }
-            local installed = require("nvim-treesitter.config").get_installed()
+            local installed_parsers = require("nvim-treesitter.config").get_installed("parsers")
+            local installed_queries = require("nvim-treesitter.config").get_installed("queries")
             local to_install = vim.iter(ensure_installed)
-                :filter(function(parser) return not vim.tbl_contains(installed, parser) end)
+                :filter(function(parser)
+                    return not vim.tbl_contains(installed_parsers, parser)
+                        or not vim.tbl_contains(installed_queries, parser)
+                end)
                 :totable()
             if #to_install > 0 then
                 require("nvim-treesitter").install(to_install)

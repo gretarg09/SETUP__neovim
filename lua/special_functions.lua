@@ -196,6 +196,54 @@ function _open_image(image_path)
     return true
 end
 
+function _find_video_at_cursor(line, cursor_col)
+    -- Finds a video path under the cursor, or the closest one to the right of it.
+    -- Works for plain paths and paths inside markdown links: [alt](path.mp4) / ![alt](path.mp4)
+    local extensions = { "mp4", "mkv", "webm", "mov", "avi", "m4v", "MP4", "MKV", "MOV" }
+
+    local video_path = nil
+    local closest_match_start = nil
+
+    for _, ext in ipairs(extensions) do
+        -- Exclude whitespace, brackets and parens so the markdown link syntax is not captured
+        local pattern = "([^%s%(%)%[%]]+%." .. ext .. ")"
+        local start_pos = 1
+        while start_pos <= #line do
+            local match_start, match_end, captured = string.find(line, pattern, start_pos)
+            if not match_start then break end
+            if cursor_col >= match_start - 1 and cursor_col <= match_end then
+                return captured
+            elseif match_start > cursor_col and (not closest_match_start or match_start < closest_match_start) then
+                closest_match_start = match_start
+                video_path = captured
+            end
+            start_pos = match_end + 1
+        end
+    end
+
+    return video_path
+end
+
+function OpenVideoWithMpv()
+    local line = vim.api.nvim_get_current_line()
+    local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
+    local video_path = _find_video_at_cursor(line, cursor_col)
+
+    if not video_path then
+        print("No video found under cursor")
+        return
+    end
+
+    video_path = _handle_relative_paths(video_path)
+
+    if not _check_if_file_exists(video_path) then
+        return
+    end
+
+    vim.fn.jobstart({ "mpv", video_path }, { detach = true })
+    print("Opening video: " .. video_path)
+end
+
 function InsertDateHeading()
     local date = os.date("%Y-%m-%d")
     local heading = "## " .. date
@@ -246,6 +294,8 @@ m.ToggleCheckbox = ToggleCheckbox
 m.OpenGithub = OpenGithub
 m.OpenImageWithSwayimg = OpenImageWithSwayimg
 m._find_image_at_cursor = _find_image_at_cursor
+m.OpenVideoWithMpv = OpenVideoWithMpv
+m._find_video_at_cursor = _find_video_at_cursor
 m.InsertDateHeading = InsertDateHeading
 
 return m
